@@ -2,7 +2,7 @@
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
     "height": 40,
-    "margin": "0 5 0 5",
+    "margin": "5 5 0 2",
     "spacing":0,
 
     // Choose the order of the modules
