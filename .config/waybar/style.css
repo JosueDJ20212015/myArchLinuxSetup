@@ -45,7 +45,7 @@ nord15 #b48ead
     border: 0;
     border-radius: 0;
     padding: 0 0;
-    font-family:Symbols Nerd Font Mono;
+    font-family:Symbols Nerd Font Mono, monospace;
     font-size: 15px;
     margin-right: 5px;
     margin-left: 5px;
@@ -67,8 +67,9 @@ window#waybar {
 }
 
 #workspaces button.active {
-    border-color: #81a1c1;
+  color: #ffcc00;
 }
+
 
 #clock, #battery, #cpu, #memory,#idle_inhibitor, #temperature,#custom-keyboard-layout, #backlight, #network, #pulseaudio, #tray, #window,#custom-launcher,#custom-power,#custom-updates ,#custom-network_traffic,#custom-weather{
     padding: 0 3px;
@@ -157,14 +158,17 @@ window#waybar {
 #tray {
 }
 
-/*#custom-launcher{
-        font-size: 20px;
-        background-image: url('/home/josuepc/.config/waybar/launcher.png');
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-        border-style: hidden;
-}*/
+#custom-launcher {
+  padding: 4px 12px;
+  color: #00b3ff;
+  text-shadow: 0 0 6px #00b3ff;
+  transition: all 0.3s ease;
+}
+
+#custom-launcher:hover {
+  color: #00ffff;
+  text-shadow: 0 0 12px #00ffff, 0 0 24px #00ffff;
+}
 
 #custom-power{
     border-style: hidden;
