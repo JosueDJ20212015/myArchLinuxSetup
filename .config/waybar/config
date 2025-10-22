@@ -10,7 +10,7 @@
 
     "modules-left": ["custom/launcher", "hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "network", "tray", "custom/power"],
+    "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "tray", "custom/power"],
 
  // Modules configuration
 
