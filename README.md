@@ -51,7 +51,7 @@
 - **Example:**
   ```bash
   ln -s ~/.dotfiles/hypr ~/.config/hypr
-``
+`
 
 
 
