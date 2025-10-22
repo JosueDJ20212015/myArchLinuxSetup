@@ -1,6 +1,6 @@
 # 🧠 System Configuration Notes
 
-## 🏗️ Core Components
+## Core Components 🏗️
 ### Hyprland
 - **Role:** Window manager (Wayland compositor)
 - **Purpose:** Controls window layout, animations, and keyboard shortcuts.
@@ -24,7 +24,7 @@
 ---
 
 
-## 🧰 Supporting Tools
+## Supporting Tools 🧰
 ### Kitty
 - **Role:** Terminal emulator
 - **Purpose:** Main terminal, supports GPU rendering and transparency.
