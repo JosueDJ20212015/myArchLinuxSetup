@@ -16,7 +16,7 @@
   - `~/.config/waybar/style.css`
 - **Tip:** Use CSS for hover animations and color themes.
 
-  ### 🖼️ Wpaperd
+### 🖼️ Wpaperd
 - **Role:** Wallpaper manager for Wayland
 - **Purpose:** Sets per-monitor wallpapers with transitions.
 - **Config file:** `~/.config/wpaperd/config.toml`
