@@ -51,3 +51,8 @@
 - **Example:**
   ```bash
   ln -s ~/.dotfiles/hypr ~/.config/hypr
+
+
+
+
+© 2025 Elmer JR
