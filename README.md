@@ -1,4 +1,4 @@
-# 🧠 System Configuration Notes
+# 🖌️ System Configuration Notes
 
 ## **Core Components** 🏗️
 ### Hyprland
