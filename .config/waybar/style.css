@@ -41,15 +41,11 @@ nord15 #b48ead
 /* Reset all styles */
 
 * {
-    /*color: #eceff4;*/
     border: 0;
     border-radius: 0;
     padding: 0 0;
     font-family:Symbols Nerd Font Mono, monospace;
     font-size: 15px;
-    /*margin-right: 5px;*/
-    /*margin-left: 5px;*/
-    /*padding-bottom:2px;*/
    }
 
 window#waybar {
@@ -80,10 +76,10 @@ window#waybar {
     padding-bottom:2px;
 }
 
+
 /* -----------------------------------------------------------------------------
  * Module styles
  * -------------------------------------------------------------------------- */
-
 
 #clock {
  color:#a3be8c;
@@ -162,20 +158,25 @@ window#waybar {
 }
 
 #custom-launcher {
+  font-size: 20px;
   padding: 4px 12px;
   color: #00b3ff;
-  text-shadow: 0 0 6px #00b3ff;
   transition: all 0.3s ease;
 }
 
 #custom-launcher:hover {
   color: #00ffff;
-  text-shadow: 0 0 12px #00ffff, 0 0 24px #00ffff;
+  text-shadow: 0 0 6px #00ffff;
+}
+
+#workspaces:hover {
+    
 }
 
 #custom-power{
     border-style: hidden;
     margin-top:2px;
+    color: #e20548;
 }
 
 #window{
