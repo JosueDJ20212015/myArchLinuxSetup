@@ -67,7 +67,7 @@ window#waybar {
 }
 
 
-#clock, #battery, #cpu, #memory,#idle_inhibitor, #temperature,#custom-keyboard-layout, #backlight, #network, #pulseaudio, #tray, #window,#custom-power,#custom-updates ,#custom-network_traffic,#custom-weather{
+#clock, #battery, #cpu, #memory,#idle_inhibitor, #temperature,#custom-keyboard-layout, #backlight, #network, #pulseaudio, #tray, #window,#custom-updates ,#custom-network_traffic,#custom-weather{
     padding: 0 3px;
     border-bottom: 2px;
     border-style: solid;
@@ -115,7 +115,7 @@ window#waybar {
 }
 
 #cpu {
-    color:#a3be8c ;
+    color:#a3be8c;
 }
 
 #memory {
@@ -174,8 +174,12 @@ window#waybar {
 }
 
 #custom-power{
-    border-style: hidden;
-    margin-top:2px;
+    padding: 0 3px;
+    /*border-bottom: 2px;*/
+    border-style: solid;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding-bottom:2px;
     color: #e20548;
 }
 

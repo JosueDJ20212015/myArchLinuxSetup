@@ -68,7 +68,7 @@
         "on-click": "foot -e htop"
     },
     "memory": {
-        "format": "🖴 {: >3}%",
+        "format": "🖴{:>3}%",
         "on-click": "foot -e htop"
     },
     "temperature": {
