@@ -1,58 +1,80 @@
-# 🖌️System Configuration Notes
+🖌️ Notas de Configuración del Sistema
 
-## **Core Components** 🏗️
+## Componentes Principales 🏗️
+
 ### Hyprland
-- **Role:** Window manager (Wayland compositor)
-- **Purpose:** Controls window layout, animations, and keyboard shortcuts.
-- **Config file:** `~/.config/hypr/hyprland.conf`
-- **Key concept:** Tiling + gestures + transitions under Wayland.
 
+* **Rol:** Gestor de ventanas (compositor de Wayland)
+* **Propósito:** Controla la distribución de ventanas, animaciones y atajos de teclado.
+* **Archivo de configuración:** `~/.config/hypr/hyprland.conf`
+* **Concepto clave:** Tiling + gestos + transiciones sobre Wayland.
 
 ### Waybar
-- **Role:** Top bar / system status bar
-- **Purpose:** Displays workspaces, system stats, clock, network, etc.
-- **Config files:**
-  - `~/.config/waybar/config`
-  - `~/.config/waybar/style.css`
-- **Tip:** Use CSS for hover animations and color themes.
 
-### Wpaperd
-- **Role:** Wallpaper manager for Wayland
-- **Purpose:** Sets per-monitor wallpapers with transitions.
-- **Config file:** `~/.config/wpaperd/config.toml`
+* **Rol:** Barra superior / barra de estado del sistema
+* **Propósito:** Muestra workspaces, estadísticas del sistema, reloj, red, etc.
+* **Archivos de configuración:**
+   * `~/.config/waybar/config`
+   * `~/.config/waybar/style.css`
+* **Tip:** Usa CSS para animaciones al pasar el mouse (hover) y temas de color.
 
----
+### Hyprlock 🔒
 
+* **Rol:** Pantalla de bloqueo (lockscreen) de la sesión activa
+* **Propósito:** Bloquea la sesión con reloj, fecha y campo de contraseña personalizados.
+* **Archivo de configuración:** `~/.config/hypr/hyprlock.conf`
+* **Estilo actual:** Paleta cian/azul estilo Arch (coincide con el color de borde activo de Hyprland, `#33ccff`), con feedback visual de `fail_color`/`fail_text` si la contraseña es incorrecta.
+* **Nota:** Hyprlock y SDDM son cosas distintas — Hyprlock controla el bloqueo de sesión; SDDM controla la pantalla de inicio de sesión (login). Cambios en uno no afectan al otro.
 
-## **Supporting Tools** 🧰
+### swww 🖼️
+
+* **Rol:** Demonio de wallpapers para Wayland
+* **Propósito:** Aplica y rota wallpapers con transiciones animadas.
+* **Cómo se usa:** `exec-once = swww-daemon` en `hyprland.conf`, junto con un script propio `wallpaper-loop.sh` que rota los fondos automáticamente.
+* **Nota:** Anteriormente se usaba `wpaperd` (queda comentado en la config como alternativa desactivada, por si se necesita volver atrás).
+
+## Herramientas de Soporte 🧰
+
 ### Kitty
-- **Role:** Terminal emulator
-- **Purpose:** Main terminal, supports GPU rendering and transparency.
-- **Config file:** `~/.config/kitty/kitty.conf`
-- **Tips:**  
-  - Add cursor trail and neon effects.  
-  - Adjust opacity with `background_opacity`.
- 
+
+* **Rol:** Emulador de terminal
+* **Propósito:** Terminal principal, con renderizado por GPU y transparencia.
+* **Archivo de configuración:** `~/.config/kitty/kitty.conf`
+* **Tips:**
+   * Agregar cursor trail y efectos neón.
+   * Ajustar la opacidad con `background_opacity`.
+
 ### Fish
-- **Role:** Shell
-- **Purpose:** User-friendly shell with autosuggestions and syntax highlighting.
-- **Config file:** `~/.config/fish/config.fish`
-- **Note:** Kitty uses Fish as its default shell (`shell fish`).
+
+* **Rol:** Shell
+* **Propósito:** Shell amigable con autosugerencias y resaltado de sintaxis.
+* **Archivo de configuración:** `~/.config/fish/config.fish`
+* **Nota:** Kitty usa Fish como shell por defecto (`shell fish`).
 
 ### Git + GitHub
-- **Role:** Version control for configuration files.
-- **Purpose:** Backup and sync `.dotfiles` across systems.
-- **Main folder:** `~/.dotfiles`
-- **Tip:** Use symbolic links (`ln -s`) to point config folders to `.dotfiles`.
 
-### Symbolic Links
-- **Role:** Connects real config files to your Git-tracked repo.
-- **Purpose:** Keeps your `.config` organized and versioned without duplication.
-- **Example:**
-  ```bash
-  ln -s ~/.dotfiles/hypr ~/.config/hypr
+* **Rol:** Control de versiones para los archivos de configuración.
+* **Propósito:** Respaldo y sincronización de `.dotfiles` entre equipos.
+* **Carpeta principal:** `~/.dotfiles`
+* **Autenticación:** Vía SSH (no HTTPS con token), forzado por el puerto 443 ya que el puerto 22 está bloqueado en la red:
 
+```
+# ~/.ssh/config
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github
+```
 
+* **Tip de seguridad:** Nunca generar llaves SSH ni guardar tokens dentro de una carpeta rastreada por Git. Se recomienda un `.gitignore` que excluya archivos de llaves (`*.pub`, `id_ed25519*`, `*.pem`, `*.key`).
 
+### Enlaces Simbólicos (Symlinks)
 
-© 2025 Elmer JR
+* **Rol:** Conecta los archivos de configuración reales con tu repositorio rastreado por Git.
+* **Propósito:** Mantiene tu `.config` organizado y versionado sin duplicar archivos.
+* **Ejemplo:**
+
+```bash
+ln -s ~/.dotfiles/hypr ~/.config/hypr
+```
