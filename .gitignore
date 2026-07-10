@@ -1,0 +1,6 @@
+*.pub
+id_ed25519*
+dotFiles
+dotFiles.pub
+*.pem
+*.key
