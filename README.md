@@ -83,3 +83,4 @@ ln -s ~/.dotfiles/hypr ~/.config/hypr
 
 ![Escritorio](screenshots/desktop.png)
 ![Waybar](screenshots/waybar.png)
+[![Ver demo](screenshots/thumbnail.png)](https://youtu.be/UsZpw_jwruE)
