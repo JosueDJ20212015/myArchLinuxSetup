@@ -78,3 +78,8 @@ Host github.com
 ```bash
 ln -s ~/.dotfiles/hypr ~/.config/hypr
 ```
+
+## Capturas 📸
+
+![Escritorio](screenshots/desktop.png)
+![Waybar](screenshots/waybar.png)
