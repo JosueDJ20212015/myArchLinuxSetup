@@ -8,7 +8,7 @@
     // Choose the order of the modules
     // Add according to your wishes: "custom/weather"
 
-    "modules-left": ["custom/launcher", "hyprland/workspaces"],
+    "modules-left": ["custom/launcher", "hyprland/workspaces", "hyprland/window"],
     "modules-center": ["clock"],
     "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "tray", "custom/power"],
 
@@ -37,7 +37,7 @@
     "on-scroll-down": "hyprctl dispatch workspace e-1",
     },
     "hyprland/window": {
-        "format": "{}",
+        "format": "",
 	"icon":true,
 	"icon-size" : 20
     },
