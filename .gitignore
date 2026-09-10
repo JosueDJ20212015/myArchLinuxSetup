@@ -4,3 +4,7 @@ dotFiles
 dotFiles.pub
 *.pem
 *.key
+
+# Respaldos puntuales de SDDM: snapshots de un estado que ya no existe,
+# no configuración a versionar. Ver sddm/README.md.
+sddm/backup-*/

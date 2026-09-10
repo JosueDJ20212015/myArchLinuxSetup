@@ -1,0 +1,17 @@
+[SddmGreeterTheme]
+Name=sweet-plasma6
+Description=Sweet sddm theme for plasma 6
+Author=Eliver Lara
+Copyright=(c) 2024, Eliver Lara
+License=GPL 3+
+Type=sddm-theme
+Version=0.1
+Website=https://github.com/EliverLara/Sweet/tree/nova/kde/sddm
+Screenshot=preview.png
+MainScript=Main.qml
+ConfigFile=theme.conf
+TranslationsDirectory=translations
+Email=eliverlara@gmail.com
+Theme-Id=sweet-plasma6
+Theme-API=2.0
+QtVersion=6
