@@ -197,7 +197,7 @@ sof-firmware
 spotifyd
 sudo
 swappy
-swww
+awww
 systemd
 systemd-sysvcompat
 tar

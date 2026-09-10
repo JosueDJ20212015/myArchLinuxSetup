@@ -26,12 +26,12 @@
 * **Estilo actual:** Paleta cian/azul estilo Arch (coincide con el color de borde activo de Hyprland, `#33ccff`), con feedback visual de `fail_color`/`fail_text` si la contraseña es incorrecta.
 * **Nota:** Hyprlock y SDDM son cosas distintas — Hyprlock controla el bloqueo de sesión; SDDM controla la pantalla de inicio de sesión (login). Cambios en uno no afectan al otro.
 
-### swww 🖼️
+### awww 🖼️
 
 * **Rol:** Demonio de wallpapers para Wayland
 * **Propósito:** Aplica y rota wallpapers con transiciones animadas.
-* **Cómo se usa:** `exec-once = swww-daemon` en `hyprland.conf`, junto con un script propio `wallpaper-loop.sh` que rota los fondos automáticamente.
-* **Nota:** Anteriormente se usaba `wpaperd` (queda comentado en la config como alternativa desactivada, por si se necesita volver atrás).
+* **Cómo se usa:** `exec-once = awww-daemon` en `hyprland.conf`, junto con un script propio `wallpaper-loop.sh` que rota los fondos automáticamente.
+* **Nota:** Antes se llamaba `swww` — el proyecto se renombró a `awww` (mismo autor, mismo comportamiento, binarios `awww`/`awww-daemon`). Anteriormente se usaba `wpaperd` (queda comentado en la config como alternativa desactivada, por si se necesita volver atrás).
 
 ## Herramientas de Soporte 🧰
 

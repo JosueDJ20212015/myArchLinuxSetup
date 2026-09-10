@@ -13,4 +13,4 @@ WALLPAPER=$(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o
 TRANSITION=${TRANSITIONS[$RANDOM % ${#TRANSITIONS[@]}]}
 
 # Aplicar el wallpaper con la transición
-swww img "$WALLPAPER" --transition-type "$TRANSITION" --transition-duration 2
+awww img "$WALLPAPER" --transition-type "$TRANSITION" --transition-duration 2
