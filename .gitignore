@@ -8,3 +8,6 @@ dotFiles.pub
 # Respaldos puntuales de SDDM: snapshots de un estado que ya no existe,
 # no configuración a versionar. Ver sddm/README.md.
 sddm/backup-*/
+
+# Igual para GRUB. Ver grub/README.md.
+grub/backup-*/
