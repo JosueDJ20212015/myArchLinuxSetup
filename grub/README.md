@@ -181,18 +181,165 @@ de llaves de cierre (`grep -c "^}"`) **no sirve** para esto: no captura las
 llaves indentadas de `menuentry` anidados dentro de submenús, así que un
 conteo bajo no significa desbalance real. Usar siempre `grub-script-check`.
 
+## Contraseña de GRUB: bloquear `e`/`c`, sin bloquear el arranque
+
+Objetivo: que nadie con acceso físico pueda editar una entrada (`e`) o abrir
+la consola (`c`) para meter `init=/bin/bash` y entrar como root — pero que
+`Arch Linux` y `Windows Boot Manager` sigan arrancando libres, sin pedir
+nada.
+
+### Qué falló en el intento anterior
+
+Quedó un residuo en `/etc/grub.d/40_custom` (comentado, ya limpiado):
+
+```
+#set superusers="admin"
+#password_pbkdf2 admin grub.pbkdf2.sha512.10000.grub.pbkdf2.sha512.10000.A3C256DD...
+```
+
+Separando por puntos, el formato correcto es `grub.pbkdf2.sha512.<iter>.<salt>.<hash>`
+— 6 campos. Este tenía **10**: el prefijo `grub.pbkdf2.sha512.10000.` estaba
+**duplicado**, probablemente por pegar la salida completa de
+`grub-mkpasswd-pbkdf2` sobre una plantilla que ya tenía el mismo prefijo
+escrito. El hash nunca podía validar — el síntoma (credenciales correctas
+rechazadas) era indistinguible de una contraseña mal tecleada.
+
+Esta vez el hash se generó y se escribió **directo al archivo destino en una
+sola operación**, sin pasar por pantalla ni portapapeles, y se validó con un
+script Python que replica PBKDF2-HMAC-SHA512 **antes** de tocar nada más.
+
+### Diseño: dos mecanismos independientes
+
+1. **Autenticación** (`/etc/grub.d/05_ejr_grub_password`, sin dueño):
+   ```
+   set superusers="admin"
+   export superusers
+   password_pbkdf2 admin <hash>
+   ```
+   El `export` es imprescindible y nada obvio — la documentación de GRUB
+   (`info grub`, nodo *Authentication and authorisation*) dice explícitamente:
+   *"The environment variable needs to be exported to also affect the section
+   defined by the `submenu` command."* Sin `export`, la protección no llega a
+   las entradas dentro de submenús (podrían quedar sin protección real, sin
+   avisar).
+
+2. **Excepciones libres** (`--unrestricted`), en las entradas/submenús exactos:
+   - `Arch Linux` (entrada simple, dentro de `10_linux`)
+   - `Windows Boot Manager` (dentro de `30_os-prober`, variante EFI)
+   - `Garuda Linux snapshots` (dentro de `70_snapshots-btrfs`, ya lo soportaba
+     de fábrica vía `GRUB_BTRFS_DISABLE_PROTECTION_SUBMENU`)
+
+   **Protegido a propósito:** `Advanced options for Arch Linux` (kernels
+   antiguos, fallback, **recovery mode**) — es el vector principal para
+   conseguir una shell con privilegios, dejarlo libre anularía el propósito
+   de la tarea.
+
+   **Snapshots libres a propósito:** son la red de recuperación si una
+   actualización rompe el arranque — si quedaran protegidos y en ese momento
+   no se recuerda la contraseña, se pierde la red de seguridad justo cuando
+   se necesita. El riesgo es menor de lo que parece: un snapshot arranca un
+   sistema normal que pide login, no una shell privilegiada como recovery
+   mode.
+
+### GRUB usa teclado US siempre
+
+Por eso la contraseña es solo letras y dígitos, sin símbolos: los caracteres
+alfanuméricos ASCII ocupan la misma posición física en cualquier
+distribución de teclado, así que no hay ambigüedad posible sin importar qué
+layout tenga el sistema en uso. Un símbolo (`@`, `"`, etc.) sí podría estar
+en una tecla distinta según el layout que GRUB asuma internamente.
+
+### Archivos con dueño que se tocaron, y qué revisar
+
+`10_linux` y `30_os-prober` (paquete `grub`, **sin backup file declarado**)
+se editaron para agregar `--unrestricted` a las entradas simples de Arch y
+Windows. Un parche Python idempotente y auto-validante
+(`scripts/ejr-grub-unrestricted-patch.py`) hace esto — aborta y avisa si el
+patrón esperado no aparece exactamente una vez, en vez de fallar en
+silencio como haría un `sed` sin coincidencia.
+
+**Blindaje:** hook de pacman (`hooks/99-ejr-grub-unrestricted.hook`,
+`Target = grub`, `PostTransaction`) que reaplica el parche automáticamente
+tras cada actualización de `grub`, y regenera `grub.cfg`. Si el patrón ya no
+coincide (porque `grub` cambió el texto exacto de la línea), el parche
+**avisa en pantalla durante el `-Syu`** — no falla en silencio.
+
+**Modo de fallo, en ambos casos:** Arch/Windows vuelven a pedir la
+contraseña que tú mismo elegiste. No es "no arranca" — es "hay que teclear
+la contraseña de nuevo hasta que se note y se corrija".
+
+### Verificar el hash (repetible en cualquier momento)
+
+```bash
+python3 scripts/verify-grub-hash.py
+```
+
+Lee el hash directo de `/etc/grub.d/05_ejr_grub_password`, pide la
+contraseña de forma oculta (`getpass`), y compara — nunca hay que copiar ni
+pegar el hash a mano.
+
+### Probado en VM antes de tocar el arranque real
+
+`grub-script-check` solo valida sintaxis, no el motor de autorización en
+tiempo de ejecución. Se instaló `qemu` + `edk2-ovmf`, se construyó una
+imagen EFI de prueba (`grub-install --removable` + copia del `grub.cfg`
+real), y se verificó en un GRUB real corriendo en la VM:
+
+- `Arch Linux` arrancó automáticamente al vencer el timeout, **sin pedir
+  contraseña** (falló después por no encontrar el kernel — la imagen de
+  prueba no tiene `/boot` real, es esperado)
+- `Advanced options for Arch Linux` con usuario/contraseña **incorrectos**:
+  `error: ...grub_auth_check_authentication...access denied`
+- `Advanced options for Arch Linux` con la contraseña **real**: acceso
+  concedido, se pudo ver el contenido del submenú
+
+`Garuda Linux snapshots` no se pudo probar visualmente en la VM (necesita un
+archivo compañero, `grub-btrfs.cfg`, que no se copió a la imagen de prueba),
+pero el texto generado (`submenu 'Garuda Linux snapshots' --unrestricted {`)
+ya pasó `grub-script-check` y usa el mismo mecanismo `--unrestricted` ya
+verificado empíricamente con Arch Linux.
+
+### Qué protege esto y qué no
+
+**Protege:** que alguien con acceso físico presione `e` para editar una
+entrada y arrancar con `init=/bin/bash`, o `c` para abrir la consola de
+GRUB y montar/manipular discos manualmente antes de que arranque el SO.
+
+**No protege:**
+- Contra alguien que se lleve el disco físico y lo monte en otra máquina —
+  para eso hace falta cifrado completo del disco (LUKS), que esto no
+  sustituye.
+- Contra arranque desde un USB/red si el firmware UEFI no tiene su propia
+  contraseña y el orden de arranque no está fijado — cualquiera puede
+  simplemente elegir arrancar otro medio desde el menú de firmware.
+
 ## Inventario
 
 * `astronaut-ejr/` — tema completo v2, copia real desde `/boot/grub/themes/astronaut-ejr/`
 * `grub` — copia de `/etc/default/grub` (sin el fragmento; el fragmento vive aparte)
 * `zz-ejr-grub.cfg` — el fragmento de blindaje, copia de `/etc/default/grub.d/zz-ejr-grub.cfg`
 * `grub.d/31_ejr_leave_options`, `grub.d/35_ejr_submenu_open`, `grub.d/95_ejr_submenu_close` — los tres scripts propios de reorganización del menú, copias de `/etc/grub.d/`
+* `grub.d/05_ejr_grub_password` — `superusers`/`export`/`password_pbkdf2` (el hash, nunca la contraseña en claro)
+* `grub.d/10_linux`, `grub.d/30_os-prober` — copias parcheadas con `--unrestricted`, con dueño de paquete
+* `grub.d/40_custom` — copia ya limpia, sin el residuo del intento anterior
+* `hooks/99-ejr-grub-unrestricted.hook` — hook de pacman que reaplica el parche tras actualizar `grub`
+* `scripts/ejr-grub-unrestricted-patch.py` — el parche idempotente y auto-validante
+* `scripts/verify-grub-hash.py` — verificación repetible del hash
+* `grub-btrfs.config.d/zz-ejr-unrestricted.cfg` — snapshots libres, vía mecanismo oficial de `grub-btrfs`
 
 ## Rutas sin dueño
 
 * `/boot/grub/themes/astronaut-ejr/` — confirmado con `pacman -Qoq`
 * `/etc/default/grub.d/zz-ejr-grub.cfg` — archivo propio en un directorio de
   fragmentos; nada reclama ese nombre de archivo específico
+* `/etc/grub.d/05_ejr_grub_password`, `31_ejr_leave_options`,
+  `35_ejr_submenu_open`, `95_ejr_submenu_close` — scripts propios
+* `/etc/pacman.d/hooks/99-ejr-grub-unrestricted.hook` — directorio de
+  usuario, nunca pertenece a un paquete
+* `/usr/local/bin/ejr-grub-unrestricted-patch.py` — `/usr/local` está
+  reservado para el administrador local por convención, pacman no lo toca
+* `/etc/default/grub-btrfs/config.d/zz-ejr-unrestricted.cfg` — fragmento
+  propio en el directorio de drop-ins de `grub-btrfs`
 
 ## Rutas que siguen perteneciendo a paquetes
 
@@ -203,6 +350,12 @@ conteo bajo no significa desbalance real. Usar siempre `grub-script-check`.
   `garuda-common-settings`) y `20-garuda-dracut-support.cfg` (paquete
   `garuda-dracut-support`) — no se tocaron; nuestro fragmento ordena después
   de ambos alfabéticamente, así que sigue ganando aunque cambien
+* `/etc/grub.d/10_linux`, `/etc/grub.d/30_os-prober` — propiedad de `grub`,
+  **sin backup file declarado**. Editados para agregar `--unrestricted`;
+  blindados con el hook de pacman (ver sección de contraseña arriba)
+* `/etc/grub.d/40_custom` — propiedad de `grub`, **con backup file
+  declarado**. Solo se le quitó el residuo del intento anterior; no se le
+  agregó nada activo
 
 ## Instalar en una máquina nueva
 
@@ -232,20 +385,43 @@ desinstalarlo (`pacman -Qi grub-theme-garuda` para revisar dependientes
 primero) — si no, su próximo `post_upgrade()` seguirá intentando escribir
 sobre `/etc/default/grub` (inofensivo gracias al fragmento, pero innecesario).
 
+Para la contraseña, en una máquina nueva:
+
+```bash
+sudo cp grub.d/05_ejr_grub_password /etc/grub.d/05_ejr_grub_password
+sudo chmod +x /etc/grub.d/05_ejr_grub_password
+sudo cp scripts/ejr-grub-unrestricted-patch.py /usr/local/bin/
+sudo chmod +x /usr/local/bin/ejr-grub-unrestricted-patch.py
+sudo python3 /usr/local/bin/ejr-grub-unrestricted-patch.py
+sudo cp hooks/99-ejr-grub-unrestricted.hook /etc/pacman.d/hooks/
+sudo mkdir -p /etc/default/grub-btrfs/config.d
+sudo cp grub-btrfs.config.d/zz-ejr-unrestricted.cfg /etc/default/grub-btrfs/config.d/
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo grub-script-check /boot/grub/grub.cfg
+python3 scripts/verify-grub-hash.py
+```
+
+El hash es el mismo en cualquier máquina donde se copie este archivo — si
+quieres una contraseña distinta en la máquina nueva, genera un `05_ejr_grub_password`
+nuevo en vez de copiar este (ver la Fase 2 de la tarea original: generar y
+escribir en una sola operación, sin copiar/pegar el hash a mano).
+
 ## Qué revisar tras un `-Syu` o una actualización de kernel
 
 1. `sudo grep -n '^Current=\|GRUB_THEME' /etc/default/grub.d/zz-ejr-grub.cfg` — el fragmento no debería cambiar solo
 2. `sudo grep -n 'theme' /boot/grub/grub.cfg` — debe seguir apuntando a `astronaut-ejr`
 3. `pacman -Qi grub-theme-garuda` — si alguna vez vuelve a aparecer instalado (reintroducido como dependencia de algo), revisar por qué antes de que su script vuelva a correr
 4. Una actualización de kernel regenera `grub.cfg` (vía `99-update-grub.hook` u otro mecanismo de Garuda) — eso es normal y no debería afectar el tema, ya que relee `/etc/default/grub` + fragmentos cada vez
+5. `sudo grep -n 'unrestricted' /etc/grub.d/10_linux /etc/grub.d/30_os-prober` — debe seguir habiendo exactamente una coincidencia en cada archivo tras cualquier actualización de `grub`. Si el hook de pacman corrió, revisa el log de esa transacción (`grep -A5 'ejr-grub-unrestricted' /var/log/pacman.log`) por si avisó de un patrón que ya no coincide.
 
 ## Restaurar tras una reinstalación o si algo sale mal
 
 ```bash
 sudo cp -r astronaut-ejr /boot/grub/themes/astronaut-ejr
 sudo cp zz-ejr-grub.cfg /etc/default/grub.d/zz-ejr-grub.cfg
-sudo cp grub.d/31_ejr_leave_options grub.d/35_ejr_submenu_open grub.d/95_ejr_submenu_close /etc/grub.d/
-sudo chmod +x /etc/grub.d/31_ejr_leave_options /etc/grub.d/35_ejr_submenu_open /etc/grub.d/95_ejr_submenu_close
+sudo cp grub.d/31_ejr_leave_options grub.d/35_ejr_submenu_open grub.d/95_ejr_submenu_close grub.d/05_ejr_grub_password /etc/grub.d/
+sudo chmod +x /etc/grub.d/31_ejr_leave_options /etc/grub.d/35_ejr_submenu_open /etc/grub.d/95_ejr_submenu_close /etc/grub.d/05_ejr_grub_password
+sudo python3 scripts/ejr-grub-unrestricted-patch.py
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 sudo grub-script-check /boot/grub/grub.cfg
 ```

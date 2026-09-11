@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = grub
+
+[Action]
+Description = Reaplicando --unrestricted a Arch/Windows tras actualizar grub...
+When = PostTransaction
+Exec = /bin/sh -c '/usr/local/bin/ejr-grub-unrestricted-patch.py; grub-mkconfig -o /boot/grub/grub.cfg'
