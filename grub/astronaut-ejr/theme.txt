@@ -1,4 +1,4 @@
-# astronaut-ejr — Astronaut (Catppuccin) adaptado a la paleta Arch Blue / ambar
+# astronaut-ejr v2 — paleta Arch Blue / ambar, menu centrado
 # Base: astronaut-catppuccin 1.02
 
 title-text: ""
@@ -12,11 +12,22 @@ terminal-border: "0"
 terminal-width: "100%"
 terminal-height: "100%"
 
++ label {
+  id = "__title__"
+  top = 7%
+  left = 0
+  width = 100%
+  align = "center"
+  text = "GRUB OS SELECTOR"
+  font = "JetBrains Mono Regular 24"
+  color = "#33CCFF"
+}
+
 + boot_menu {
-  left = 50%
-  top = 20%
-  width = 36%
-  height = 62%
+  left = 30%
+  top = 24%
+  width = 40%
+  height = 58%
   item_font = "JetBrains Mono Regular 20"
   item_color = "#7FDFFF"
   selected_item_color = "#FFB300"

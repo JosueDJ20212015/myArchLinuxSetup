@@ -97,11 +97,96 @@ GRUB prueba cada valor en orden hasta que el firmware soporte uno. Si
 bits; si tampoco, cae a `auto` como último recurso — nunca se queda sin menú
 por falta de un modo de video.
 
+## Tema v2 (menú centrado, título propio)
+
+`astronaut-ejr` se actualizó a v2: `background.png` recompuesto, menú centrado
+(antes iba a la derecha), y un `label` con el título "GRUB OS SELECTOR". Sigue
+siendo 1920×1080, sin reescalar. Reemplazo directo — no coexiste con v1.
+
+## Menú duplicado: tres parejas de scripts idénticos
+
+Además del tema, el menú mostraba **Windows, Shutdown y Restart duplicados**,
+y `os-prober` corría dos veces en cada regeneración. Causa, con evidencia:
+
+`/etc/grub.d/` tenía tres parejas de archivos **byte-idénticos** (`diff` sin
+salida en los tres casos) — uno sin dueño (más viejo) y uno con dueño de
+paquete (más nuevo), ambos ejecutándose y emitiendo la misma entrada dos
+veces, porque `grub-mkconfig` corre **todo** archivo ejecutable en
+`/etc/grub.d/` y concatena su salida (a diferencia de `/etc/default/grub.d/`,
+aquí no hay "el último gana": cada script que corre *añade* contenido, no
+sobrescribe el de otro):
+
+| Duplicado sin dueño (eliminado) | Original con dueño (intacto) |
+|---|---|
+| `15_os-prober` (9-nov-2025) | `30_os-prober` (`grub`) |
+| `16_custom_leave_options` (1-oct-2025) | `61_custom_leave_options` (`garuda-common-settings`) |
+| `90_uefi-firmware` (28-oct-2025) | `30_uefi-firmware` (`grub`) |
+
+Ninguno de los tres archivos con dueño (`30_os-prober`, `61_custom_leave_options`,
+`30_uefi-firmware`) está declarado *Backup File* por su paquete — así que
+modificarlos o quitarles el permiso de ejecución no está garantizado a
+sobrevivir la próxima actualización de ese paquete. Por eso **no se tocó
+ninguno**: se borraron solo los tres duplicados sin dueño (riesgo cero,
+permanente, nada los gestiona) y se dejaron los originales corriendo tal
+cual.
+
+**`garuda-common-settings` no se puede desinstalar** para eliminar la causa de
+raíz (como sí se hizo con `grub-theme-garuda`): es dependencia dura de
+`garuda-hyprland-settings` (`Required By` lo confirma). La estrategia aquí es
+distinta a la del tema — no eliminar la causa, sino reordenar/ocultar su
+efecto sin tocarla.
+
+## Reorganización del menú (scripts propios, sin dueño)
+
+Orden pedido: `Arch Linux` (default) → `Windows` → `UEFI Firmware Settings` →
+`Shutdown` → `Restart` → todo lo demás dentro de un submenú `More Options`.
+
+Tres archivos nuevos en `/etc/grub.d/`, todos sin dueño, todos ejecutables:
+
+* **`31_ejr_leave_options`** — copia propia de las entradas Shutdown/Restart,
+  numerada para correr justo después de `30_os-prober`/`30_uefi-firmware`.
+  El original `61_custom_leave_options` (con dueño) sigue corriendo también
+  — su salida (un segundo Shutdown/Restart, redundante) queda oculta dentro
+  del submenú de abajo en vez de aparecer arriba.
+* **`35_ejr_submenu_open`** — emite `submenu "More Options" {`
+* **`95_ejr_submenu_close`** — emite `}`
+
+Todo lo que cae entre 35 y 95 alfabéticamente (`35_fwupd`, `40_custom`,
+`41_custom`, `61_custom_leave_options` redundante, `70_snapshots-btrfs`,
+`80_memtest86+`) queda anidado dentro de `More Options`, sin haber tocado
+ninguno de esos scripts — el bloque `submenu { }` de GRUB puede abarcar la
+salida concatenada de varios scripts distintos, no tiene que ser un solo
+archivo.
+
+**Sin tilde a propósito** ("More Options", no "Más Opciones"): las fuentes
+`.pf2` del tema se generaron con `grub-mkfont` y no está confirmado que
+incluyan glifos acentuados — un carácter ausente no da error, simplemente no
+se dibuja, y solo se vería al reiniciar.
+
+**Decisión consciente: `UEFI Firmware Settings` queda top-level, fuera del
+submenú.** Meterlo dentro requeriría deshabilitar `30_uefi-firmware` (con
+dueño, sin backup declarado) — cambiar un problema ya resuelto por una
+vigilancia permanente, para ocultar una entrada que casi nunca se ve (solo
+aparece si el firmware soporta `fwsetup --is-supported`). No compensa.
+
+**`'Garuda Linux snapshots'` sigue diciendo "Garuda"** — es texto literal
+dentro de `70_snapshots-btrfs`, no usa la variable `$GRUB_DISTRIBUTOR`. No es
+un fallo del blindaje, ese script simplemente no lee esa variable para su
+propio título.
+
+**Verificación antes de reiniciar:** `grub-script-check` (herramienta oficial
+de GRUB para validar sintaxis) confirmado con salida limpia y código de
+salida `0` — el archivo generado es sintácticamente válido. Un conteo manual
+de llaves de cierre (`grep -c "^}"`) **no sirve** para esto: no captura las
+llaves indentadas de `menuentry` anidados dentro de submenús, así que un
+conteo bajo no significa desbalance real. Usar siempre `grub-script-check`.
+
 ## Inventario
 
-* `astronaut-ejr/` — tema completo, copia real desde `/boot/grub/themes/astronaut-ejr/`
+* `astronaut-ejr/` — tema completo v2, copia real desde `/boot/grub/themes/astronaut-ejr/`
 * `grub` — copia de `/etc/default/grub` (sin el fragmento; el fragmento vive aparte)
 * `zz-ejr-grub.cfg` — el fragmento de blindaje, copia de `/etc/default/grub.d/zz-ejr-grub.cfg`
+* `grub.d/31_ejr_leave_options`, `grub.d/35_ejr_submenu_open`, `grub.d/95_ejr_submenu_close` — los tres scripts propios de reorganización del menú, copias de `/etc/grub.d/`
 
 ## Rutas sin dueño
 
@@ -124,8 +209,17 @@ por falta de un modo de video.
 ```bash
 sudo cp -r astronaut-ejr /boot/grub/themes/astronaut-ejr
 sudo cp zz-ejr-grub.cfg /etc/default/grub.d/zz-ejr-grub.cfg
+sudo cp grub.d/31_ejr_leave_options grub.d/35_ejr_submenu_open grub.d/95_ejr_submenu_close /etc/grub.d/
+sudo chmod +x /etc/grub.d/31_ejr_leave_options /etc/grub.d/35_ejr_submenu_open /etc/grub.d/95_ejr_submenu_close
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo grub-script-check /boot/grub/grub.cfg
 ```
+
+Revisa también si la máquina nueva tiene duplicados propios de
+`os-prober`/`custom_leave_options`/`uefi-firmware` en `/etc/grub.d/` antes de
+copiar estos scripts — la causa (una copia manual vieja sin dueño, sin borrar
+tras una actualización del paquete) puede repetirse en cualquier instalación
+de Garuda con historial similar.
 
 Verificar:
 
@@ -150,7 +244,10 @@ sobre `/etc/default/grub` (inofensivo gracias al fragmento, pero innecesario).
 ```bash
 sudo cp -r astronaut-ejr /boot/grub/themes/astronaut-ejr
 sudo cp zz-ejr-grub.cfg /etc/default/grub.d/zz-ejr-grub.cfg
+sudo cp grub.d/31_ejr_leave_options grub.d/35_ejr_submenu_open grub.d/95_ejr_submenu_close /etc/grub.d/
+sudo chmod +x /etc/grub.d/31_ejr_leave_options /etc/grub.d/35_ejr_submenu_open /etc/grub.d/95_ejr_submenu_close
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo grub-script-check /boot/grub/grub.cfg
 ```
 
 Si el sistema no arranca bien tras un cambio manual, desde el menú de GRUB

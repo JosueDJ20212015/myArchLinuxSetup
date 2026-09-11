@@ -1,0 +1,5 @@
+#!/bin/sh
+exec tail -n +3 $0
+# josuepc 2026-09-10: abre el submenu que agrupa fwupd, placeholders,
+# el Shutdown/Restart redundante, snapshots y memtest.
+submenu "More Options" {

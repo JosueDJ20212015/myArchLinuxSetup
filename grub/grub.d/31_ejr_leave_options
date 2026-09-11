@@ -1,0 +1,16 @@
+#!/bin/sh
+exec tail -n +3 $0
+# josuepc 2026-09-10: Shutdown/Restart reposicionados justo despues de
+# Windows, sin tocar 61_custom_leave_options (con dueno, sin backup
+# declarado). El original sigue corriendo pero su salida redundante
+# queda oculta dentro del submenu "More Options".
+
+menuentry "Shutdown" --class shutdown {
+        echo "System shutting down..."
+        halt
+}
+
+menuentry "Restart" --class restart {
+        echo "System rebooting..."
+        reboot
+}
