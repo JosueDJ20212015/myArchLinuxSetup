@@ -7,6 +7,7 @@
 
 import QtQuick 2.15
 import QtQuick.Window 2.15
+import Qt5Compat.GraphicalEffects
 
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.kirigami 2.20 as Kirigami
@@ -80,6 +81,17 @@ Item {
         width: isCurrent ? faceSize : faceSize - Kirigami.Units.gridUnit
         height: width
 
+        // Recorte circular con OpacityMask (el shader de Breeze no carga en
+        // este tema y dejaba el avatar invisible)
+        layer.enabled: true
+        layer.effect: OpacityMask {
+            maskSource: Rectangle {
+                width: imageSource.width
+                height: imageSource.height
+                radius: width / 2
+            }
+        }
+
         //Image takes priority, taking a full path to a file, if that doesn't exist we show an icon
         Image {
             id: face
@@ -95,27 +107,6 @@ Item {
             visible: face.status === Image.Error || face.status === Image.Null
             anchors.fill: parent
         }
-    }
-
-    ShaderEffect {
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        width: imageSource.width
-        height: imageSource.height
-
-        supportsAtlasTextures: true
-
-        readonly property Item source: ShaderEffectSource {
-            sourceItem: imageSource
-            // software rendering is just a fallback so we can accept not having a rounded avatar here
-            hideSource: wrapper.GraphicsInfo.api !== GraphicsInfo.Software
-            live: true // otherwise the user in focus will show a blurred avatar
-        }
-
-        readonly property color colorBorder: "#0C0E15"
-
-        fragmentShader: "qrc:/qt/qml/org/kde/breeze/components/shaders/UserDelegate.frag.qsb"
     }
 
     PlasmaComponents3.Label {

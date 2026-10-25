@@ -5,6 +5,7 @@
 * **Archivos:**
    * `ejr-sddm/` — tema completo, listo para copiar
    * `sddm.conf` — config de SDDM con el tema activado
+   * `faces/josuepc.face.icon` — avatar del login (inicial estilo islas)
 
 ## Instalar en una máquina nueva
 
@@ -13,6 +14,8 @@
 sudo cp -rT ejr-sddm /usr/share/sddm/themes/ejr-sddm
 sudo chmod 644 /usr/share/sddm/themes/ejr-sddm/assets/*
 sudo cp sddm.conf /etc/sddm.conf
+# Avatar (SDDM no puede leer ~/.face.icon porque el home es 700)
+sudo install -m 644 faces/josuepc.face.icon /usr/share/sddm/faces/josuepc.face.icon
 ```
 
 Probar sin reiniciar la sesión:
