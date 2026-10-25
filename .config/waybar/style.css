@@ -1,195 +1,154 @@
 /* =============================================================================
- *
- * Waybar configuration
- *
- * Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
- *
+ * Waybar - Islas transparentes, iconos blancos
+ * Inspirado en https://github.com/Cartoone9/dotfiles
+ * Estilo anterior (Nord): en git, commit 333a3c7
  * =========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * Keyframes
- * -------------------------------------------------------------------------- */
-
-
-/*
-Polar Night
-nord0  #2e3440
-nord1  #3b4252
-nord2  #434c5e
-nord3  #4c566a
-Snow Storm
-nord4  #d8dee9
-nord5  #e5e9f0
-nord6  #eceff4
-Frost
-nord7  #8fbcbb
-nord8  #88c0d0
-nord9  #81a1c1
-nord10 #5e81ac
-Aurora
-nord11 #bf616a
-nord12 #d08770
-nord13 #ebcb8b
-nord14 #a3be8c
-nord15 #b48ead
-*/
-
-/* -----------------------------------------------------------------------------
- * Base styles
- * -------------------------------------------------------------------------- */
-
-/* Reset all styles */
-
 * {
-    border: 0;
-    border-radius: 0;
-    padding: 0 0;
-    font-family:Symbols Nerd Font Mono, monospace;
-    font-size: 15px;
-   }
+  font-family: "JetBrains Mono", "Symbols Nerd Font Mono", monospace;
+  font-size: 14px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
 
+/* La barra es transparente; los grupos flotan como islas */
 window#waybar {
-    background: rgba(0, 0, 0, 0.50);
-    border-radius: 20px 20px 20px 20px;
+  background: transparent;
+  color: #e0e0e0;
+}
+
+tooltip {
+  background: rgba(40, 40, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #e0e0e0;
+}
+
+/* -----------------------------------------------------------------------------
+ * Islas
+ * -------------------------------------------------------------------------- */
+.modules-left,
+.modules-center,
+.modules-right {
+  background: rgba(40, 40, 40, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0 4px;
+  margin: 0 4px;
+}
+
+/* -----------------------------------------------------------------------------
+ * Izquierda
+ * -------------------------------------------------------------------------- */
+#custom-launcher {
+  font-size: 18px;
+  padding: 0 10px 0 8px;
+  color: #e0e0e0;
+  transition: all 0.15s ease;
+}
+
+/* Azul de Arch Linux al pasar el cursor */
+#custom-launcher:hover {
+  color: #1793d1;
 }
 
 #workspaces button {
-    padding: 0px 2px;
-    color: #eceff4;
-    border-color: #d8dee9;
-    border-style: solid;
-    margin-right: 3px;
-    margin-left: 3px;
+  padding: 2px 6px;
+  margin: 4px 1px;
+  color: #777777;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: all 0.15s ease;
 }
 
+/* Escritorio enfocado: solo el icono, sin contorno ni fondo */
 #workspaces button.active {
-  color: #ffcc00;
+  color: #ffffff;
+  border: 1px solid transparent;
+  background: transparent;
 }
 
-
-#clock, #battery, #cpu, #memory,#idle_inhibitor, #temperature,#custom-keyboard-layout, #backlight, #network, #pulseaudio, #tray, #window,#custom-updates ,#custom-network_traffic,#custom-weather{
-    padding: 0 3px;
-    border-bottom: 2px;
-    border-style: solid;
-    margin-right: 5px;
-    margin-left: 5px;
-    padding-bottom:2px;
+#workspaces button:hover {
+  color: #cccccc;
+  background: rgba(255, 255, 255, 0.03);
 }
-
 
 /* -----------------------------------------------------------------------------
- * Module styles
+ * Centro
  * -------------------------------------------------------------------------- */
-
 #clock {
- color:#a3be8c;
+  padding: 0 10px;
+  font-weight: 600;
+  color: #e0e0e0;
 }
 
-#backlight {
-    color: #ebcb8b;
+/* Fecha que se despliega al hacer clic en la hora */
+#clock.date,
+.clock-date {
+  padding: 0 12px 0 2px;
+  font-weight: 400;
+  color: #aaaaaa;
 }
 
-#battery {
-    color: #d8dee9;
+/* -----------------------------------------------------------------------------
+ * Derecha
+ * -------------------------------------------------------------------------- */
+#custom-updates,
+#temperature,
+#cpu,
+#memory,
+#battery,
+#backlight,
+#network,
+#bluetooth,
+#pulseaudio,
+#idle_inhibitor,
+#custom-weather,
+#custom-keyboard-layout,
+#custom-network_traffic {
+  padding: 0 6px;
+  margin: 4px 0;
+  color: #e0e0e0;
+  font-size: 13px;
 }
 
-#battery.charging {
-    color: #81a1c1;
-}
-
-@keyframes blink {
-    to {
-        color: #4c566a;
-        background-color: #eceff4;
-    }
-}
-
+/* Solo los estados de alerta cambian de color */
+#temperature.critical,
 #battery.critical:not(.charging) {
-    background: #bf616a;
-    color: #eceff4;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+  color: #e57373;
 }
 
-#cpu {
-    color:#a3be8c;
+#network.disconnected,
+#bluetooth.off,
+#bluetooth.disabled {
+  color: #777777;
 }
 
-#memory {
-    color: #d3869b;
-}
-
-#network.disabled {
-    color:#bf616a;
-}
-
-#network{
-    color:#a3be8c;
-}
-
-#network.disconnected {
-    color: #bf616a;
-}
-
-#pulseaudio {
-    color: #b48ead;
-}
-
-#pulseaudio.muted {
-    color: #e20548;
-}
-
-#temperature {
-    color: #8fbcbb;
-}
-
-#temperature.critical {
-    color: #bf616a;
-}
-
-#idle_inhibitor {
-   color: #ebcb8b;
+#battery.warning:not(.charging) {
+  color: #e5b073;
 }
 
 #tray {
+  padding: 0 6px;
+  margin: 4px 0;
 }
 
-#custom-launcher {
-  font-size: 20px;
-  padding: 4px 12px;
-  color: #00b3ff;
-  transition: all 0.3s ease;
+#tray > .passive {
+  -gtk-icon-effect: dim;
 }
 
-#custom-launcher:hover {
-  color: #00ffff;
-  text-shadow: 0 0 6px #00ffff;
+/* Boton de apagado: unico icono en rojo suave */
+#custom-power {
+  color: #e57373;
+  padding: 0 10px 0 6px;
+  margin: 4px 2px;
+  transition: all 0.15s ease;
 }
 
-#workspaces:hover {
-    
-}
-
-#custom-power{
-    padding: 0 3px;
-    /*border-bottom: 2px;*/
-    border-style: solid;
-    margin-right: 5px;
-    margin-left: 5px;
-    padding-bottom:2px;
-    color: #e20548;
-}
-
-#window{
-    border-style: hidden;
-    margin-top:1px;
-}
-#custom-keyboard-layout{
-   color:#d08770;
-}
-#custom-network_traffic{
-   color:#d08770;
+#custom-power:hover {
+  color: #ef9a9a;
 }

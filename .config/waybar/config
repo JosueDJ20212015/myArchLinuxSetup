@@ -1,16 +1,16 @@
 {
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
-    "height": 40,
-    "margin": "8 5 0 5",
+    "height": 36,
+    "margin": "10 10 0 10",
     "spacing":0,
 
     // Choose the order of the modules
     // Add according to your wishes: "custom/weather"
 
-    "modules-left": ["custom/launcher", "hyprland/workspaces", "hyprland/window"],
-    "modules-center": ["clock"],
-    "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "tray", "custom/power"],
+    "modules-left": ["custom/launcher", "hyprland/workspaces"],
+    "modules-center": ["group/clock"],
+    "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "network", "bluetooth", "tray", "custom/power"],
 
  // Modules configuration
 
@@ -54,14 +54,29 @@
         "icon-size": 20,
         "spacing": 5
     },
+    // Isla del reloj: clic en la hora despliega la fecha con animacion
+    "group/clock": {
+        "orientation": "inherit",
+        "drawer": {
+            "click-to-reveal": true,
+            "transition-duration": 450,
+            "transition-left-to-right": true,
+            "children-class": "clock-date"
+        },
+        "modules": ["clock", "clock#date"]
+    },
     "clock": {
-        "tooltip-format": "<big>{:%A, %d.%B %Y }</big>\n<tt><small>{calendar}</small></tt>",
-        "format": " {:%a %d %b  %I:%M %p}",	//12 hour format
-        //"format": " {:%a %d %b  %H:%M}",	//24 hour format
-        "format-alt": " {:%d/%m/%Y  %H:%M:%S}",
-        //"max-length": 200
+        "format": "{:%I:%M %p}",
         "interval": 1,
-        "on-click": "~/.config/waybar/scripts/OCV",
+        "tooltip": false,
+        "on-click-right": "~/.config/waybar/scripts/OCV"
+    },
+    "clock#date": {
+        "format": "{:%A, %d de %B de %Y}",
+        "locale": "es_HN.UTF-8",
+        "interval": 60,
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "on-click-right": "~/.config/waybar/scripts/OCV"
     },
     "cpu": {
         "format": "🖳{usage}%",
@@ -101,20 +116,26 @@
         //"format": "&#x202b;{icon}&#x202c; {capacity}%",
         //"format-icons": ["ﱉ","ﱊ","ﱌ","ﱍ","ﱋ"]
     },
-      "network": {
-        //"interface": "wlp0s20f3", // (Optional) To force the use of this interface  "format-wifi": "  {essid}",
-        "format": "⚠Disabled",
-        "format-wifi": "",
-        "format-ethernet": "",
-        "format-linked": "{ifname} (No IP)",
-        "format-disconnected": "⚠Disabled",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+    "network": {
+        "format-wifi": "󰤨",
+        "format-ethernet": "󰈀",
+        "format-linked": "󰈀",
+        "format-disconnected": "󰤭",
         "family": "ipv4",
-        "tooltip-format-wifi": "  {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nFreq: {frequency}MHz\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
-        "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}\n up: {bandwidthUpBits} down: {bandwidthDownBits}",
-        //"min-length": 2,
-        //"max-length": 2,
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\nIP: {ipaddr}\n⇣{bandwidthDownBits} ⇡{bandwidthUpBits}",
+        "tooltip-format-ethernet": "{ifname}\nIP: {ipaddr}\n⇣{bandwidthDownBits} ⇡{bandwidthUpBits}",
+        "tooltip-format-disconnected": "Desconectado",
         "on-click": "nm-connection-editor"
+    },
+    "bluetooth": {
+        "format": "󰂯",
+        "format-connected": "󰂱",
+        "format-off": "󰂲",
+        "format-disabled": "󰂲",
+        "tooltip-format": "{controller_alias}: {status}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "on-click": "blueman-manager"
     },
    "custom/updates": {
        "format": "{} {icon}",
