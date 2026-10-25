@@ -10,11 +10,10 @@ API="${WALLHAVEN_API:-https://wallhaven.cc/api/v1/search}"
 CACHE_DIR="$HOME/Pictures/Wallpapers/online"
 MAX_CACHE=30
 
-# Temas de busqueda (uno al azar en cada cambio)
-TERMS=("samurai" "ninja" "silhouette" "katana" "anime" "amoled" "minimalist" "dark" "night city" "dragon")
-
-# Colores dominantes de Wallhaven: negro y gris oscuro
-COLORS=("000000" "424153")
+# Estilos (se turnan al azar): dark samurai, dark naturaleza, naturaleza neon
+DARK_SAMURAI=("dark samurai" "samurai silhouette" "samurai" "katana" "ronin")
+DARK_NATURALEZA=("dark forest" "dark nature" "misty forest" "night lake" "dark mountains")
+NATURALEZA_NEON=("neon landscape" "neon nature" "cyberpunk nature" "neon mountains" "synthwave landscape")
 
 # Limites para que combine con las islas (0-100)
 MAX_LUZ=28
@@ -25,16 +24,37 @@ TRANSITIONS=("fade" "wipe" "grow" "outer" "wave")
 
 mkdir -p "$CACHE_DIR"
 
+# Colores dominantes de Wallhaven: negro o gris oscuro
+DARK_COLORS=("000000" "424153")
+DARK_COLOR=${DARK_COLORS[$RANDOM % ${#DARK_COLORS[@]}]}
+
+case $((RANDOM % 3)) in
+    0) TERMS=("${DARK_SAMURAI[@]}"); COLOR_ARGS=(-d colors="$DARK_COLOR") ;;
+    1) TERMS=("${DARK_NATURALEZA[@]}"); COLOR_ARGS=(-d colors="$DARK_COLOR") ;;
+    # El neon tiene color: sin filtro de color, mas saturacion permitida,
+    # pero igual tiene que ser oscuro
+    2) TERMS=("${NATURALEZA_NEON[@]}"); COLOR_ARGS=(); MAX_SATURACION=75; MAX_LUZ=30 ;;
+esac
 TERM_Q=${TERMS[$RANDOM % ${#TERMS[@]}]}
-COLOR=${COLORS[$RANDOM % ${#COLORS[@]}]}
 
 # categories=110: general + anime, purity=100: solo SFW
-URLS=$(curl -sfG --max-time 10 "$API" \
-    --data-urlencode "q=$TERM_Q" \
-    -d categories=110 -d purity=100 -d sorting=random \
-    -d colors="$COLOR" -d ratios=16x9 \
-    -d resolutions=1920x1080,2560x1440,3840x2160 |
-    jq -r '.data[].path' 2>/dev/null | shuf -n 5)
+# sorting=favorites: los mas guardados suelen ser mas fieles a la busqueda
+buscar() {
+    curl -sfG --max-time 10 "$API" \
+        --data-urlencode "q=$TERM_Q" \
+        -d categories=110 -d purity=100 -d sorting=favorites -d page="$1" \
+        "${COLOR_ARGS[@]}" -d ratios=16x9 \
+        -d resolutions=1920x1080,2560x1440,3840x2160
+}
+
+# Pagina al azar entre las primeras 5 que existan
+RESPUESTA=$(buscar 1) || exit 1
+PAGINAS=$(jq -r '.meta.last_page // 1' <<< "$RESPUESTA")
+[ "$PAGINAS" -gt 5 ] && PAGINAS=5
+PAGINA=$((RANDOM % PAGINAS + 1))
+[ "$PAGINA" -gt 1 ] && { RESPUESTA=$(buscar "$PAGINA") || exit 1; }
+
+URLS=$(jq -r '.data[].path' <<< "$RESPUESTA" 2>/dev/null | shuf -n 5)
 
 [ -z "$URLS" ] && exit 1
 

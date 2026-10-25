@@ -288,6 +288,8 @@ hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen_state({ internal = 0
 hl.bind("code:232", hl.dsp.exec_cmd("brightnessctl -c backlight set 5%-"))
 hl.bind("code:233", hl.dsp.exec_cmd("brightnessctl -c backlight set +5%"))
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("killall -9 wpaperd && wpaperd"))
+-- Saltar al siguiente wallpaper (uno nuevo de internet; sin conexion, uno local)
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/.local/bin/cambiarWallpaperOnline.sh || ~/.local/bin/cambiarWallpaper.sh"))
 
 hl.bind("Print", hl.dsp.exec_cmd("grimblast --notify copysave area ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_selection.png"))
 hl.bind("CTRL + Print", hl.dsp.exec_cmd("grimblast --notify copysave active ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_window.png"))
