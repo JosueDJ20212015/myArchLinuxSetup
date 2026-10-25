@@ -77,6 +77,36 @@ tooltip {
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* IP local junto a los escritorios */
+#network.ip {
+  padding: 0 8px 0 10px;
+  margin-left: 4px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  color: #aaaaaa;
+  font-size: 13px;
+}
+
+#network.ip:hover {
+  color: #ffffff;
+}
+
+/* Servidores de desarrollo y Docker: junto a la IP, solo si hay algo corriendo */
+#custom-dev-servers,
+#custom-docker {
+  padding: 0 8px;
+  color: #aaaaaa;
+  font-size: 13px;
+}
+
+#custom-dev-servers {
+  color: #99ffe4;
+}
+
+#custom-dev-servers:hover,
+#custom-docker:hover {
+  color: #ffffff;
+}
+
 /* -----------------------------------------------------------------------------
  * Centro
  * -------------------------------------------------------------------------- */
@@ -84,14 +114,6 @@ tooltip {
   padding: 0 10px;
   font-weight: 600;
   color: #e0e0e0;
-}
-
-/* Fecha que se despliega al hacer clic en la hora */
-#clock.date,
-.clock-date {
-  padding: 0 12px 0 2px;
-  font-weight: 400;
-  color: #aaaaaa;
 }
 
 /* Musica dentro de la isla central */
@@ -161,6 +183,47 @@ tooltip {
 
 #battery.warning:not(.charging) {
   color: #e5b073;
+}
+
+/* Triangulito que despliega bateria/WiFi/Bluetooth */
+#custom-expandir {
+  padding: 0 6px;
+  margin: 4px 0;
+  color: #777777;
+  font-size: 11px;
+  transition: all 0.15s ease;
+}
+
+#custom-expandir:hover {
+  color: #ffffff;
+}
+
+/* Trafico de red dentro del desplegable */
+#network.trafico {
+  padding: 0 6px;
+  margin: 4px 0;
+  color: #aaaaaa;
+  font-size: 12px;
+}
+
+/* Microfono / pantalla compartida en uso: rojo suave, como el apagado */
+#privacy {
+  padding: 0 6px;
+  margin: 4px 0;
+}
+
+#privacy-item {
+  color: #e57373;
+}
+
+/* Alertas fuera del grupo: solo visibles si algo no esta normal */
+#battery.alerta.warning:not(.charging) {
+  color: #e5b073;
+}
+
+#battery.alerta.critical:not(.charging),
+#network.alerta.disconnected {
+  color: #e57373;
 }
 
 #tray {

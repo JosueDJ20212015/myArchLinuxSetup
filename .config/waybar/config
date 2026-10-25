@@ -8,9 +8,9 @@
     // Choose the order of the modules
     // Add according to your wishes: "custom/weather"
 
-    "modules-left": ["custom/launcher", "hyprland/workspaces"],
-    "modules-center": ["group/clock", "custom/media-prev", "mpris", "custom/media-next"],
-    "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "network", "bluetooth", "tray", "custom/power"],
+    "modules-left": ["custom/launcher", "hyprland/workspaces", "network#ip", "custom/dev-servers", "custom/docker"],
+    "modules-center": ["clock", "custom/media-prev", "mpris", "custom/media-next"],
+    "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery#alerta", "network#alerta", "privacy", "group/conexiones", "tray", "custom/power"],
 
  // Modules configuration
 
@@ -54,28 +54,12 @@
         "icon-size": 20,
         "spacing": 5
     },
-    // Isla del reloj: clic en la hora despliega la fecha con animacion
-    "group/clock": {
-        "orientation": "inherit",
-        "drawer": {
-            "click-to-reveal": true,
-            "transition-duration": 450,
-            "transition-left-to-right": true,
-            "children-class": "clock-date"
-        },
-        "modules": ["clock", "clock#date"]
-    },
+    // Reloj: solo fecha y hora, p. ej. "25 Oct 11:04 AM" (clic derecho: calendario)
     "clock": {
-        "format": "{:%I:%M %p}",
+        "format": "{:%d %b %I:%M %p}",
+        "locale": "en_US.UTF-8",
         "interval": 1,
         "tooltip": false,
-        "on-click-right": "~/.config/waybar/scripts/OCV"
-    },
-    "clock#date": {
-        "format": "{:%A, %d de %B de %Y}",
-        "locale": "es_HN.UTF-8",
-        "interval": 60,
-        "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "on-click-right": "~/.config/waybar/scripts/OCV"
     },
     // Musica: la isla del reloj crece cuando suena algo y se encoge sin reproductor
@@ -129,6 +113,82 @@
         "on-scroll-down": "brightnessctl -c backlight set 1%-",
         "on-scroll-up": "brightnessctl -c backlight set +1%",
         "on-click": "~/.config/waybar/scripts/backlight-hint.sh"
+    },
+    // Bateria/WiFi/Bluetooth/trafico escondidos tras un triangulito:
+    // clic para mostrar, otro clic para esconder
+    "group/conexiones": {
+        "orientation": "inherit",
+        "drawer": {
+            "click-to-reveal": true,
+            "transition-duration": 300,
+            "transition-left-to-right": false,
+            "children-class": "conexion"
+        },
+        "modules": ["custom/expandir", "network#trafico", "battery", "network", "bluetooth"]
+    },
+    "custom/expandir": {
+        "format": "",
+        "tooltip-format": "Batería, WiFi y Bluetooth"
+    },
+    "network#trafico": {
+        "interval": 2,
+        "format": "⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}",
+        "format-disconnected": "",
+        "tooltip": false
+    },
+    // Microfono o pantalla compartida en uso (solo aparece mientras se usan)
+    "privacy": {
+        "icon-spacing": 6,
+        "icon-size": 14,
+        "transition-duration": 250,
+        "modules": [
+            { "type": "audio-in", "tooltip": true, "tooltip-icon-size": 16 },
+            { "type": "screenshare", "tooltip": true, "tooltip-icon-size": 16 }
+        ]
+    },
+    // Alertas: solo aparecen cuando algo no esta normal
+    "battery#alerta": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity: >3}%",
+        "format-charging": "",
+        "format-plugged": "",
+        "format-full": "",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "network#alerta": {
+        "format-wifi": "",
+        "format-ethernet": "",
+        "format-linked": "",
+        "format-disconnected": "󰤭 sin red",
+        "tooltip": false,
+        "on-click": "nm-connection-editor"
+    },
+    // Servidores de desarrollo y Docker: solo aparecen si hay algo corriendo
+    "custom/dev-servers": {
+        "exec": "~/.config/waybar/scripts/dev-servers.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "~/.config/waybar/scripts/dev-servers.sh abrir"
+    },
+    "custom/docker": {
+        "exec": "~/.config/waybar/scripts/docker.sh",
+        "return-type": "json",
+        "interval": 10,
+        "on-click": "kitty --class docker --hold docker ps"
+    },
+    // IP local: clic para copiarla al portapapeles
+    "network#ip": {
+        "interval": 10,
+        "family": "ipv4",
+        "format-wifi": "󰩟 {ipaddr}",
+        "format-ethernet": "󰩟 {ipaddr}",
+        "format-linked": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}\nGateway: {gwaddr}\nClic para copiar",
+        "on-click": "ip -4 -o route get 1.1.1.1 | grep -oP 'src \\K\\S+' | tr -d '\\n' | wl-copy && notify-send -a red -t 1500 '󰩟  IP copiada' \"$(wl-paste)\""
     },
     "battery": {
         "states": {
