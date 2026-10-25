@@ -1,0 +1,442 @@
+#
+#   _  _               _              _         ___ _                    _
+#  | || |_  _ _ __ _ _| |__ _ _ _  __| |  ___  | __| |_ __  ___ _ _   _ | |_ _
+#  | __ | || | '_ \ '_| / _` | ' \/ _` | |___| | _|| | '  \/ -_) '_| | || | '_|
+#  |_||_|\_, | .__/_| |_\__,_|_||_\__,_|       |___|_|_|_|_\___|_|    \__/|_|
+#        |__/|_|
+#          ___           __ _
+#   ___   / __|___ _ _  / _(_)__ _
+#  |___| | (__/ _ \ ' \|  _| / _` |
+#         \___\___/_||_|_| |_\__, |
+#                            |___/
+#
+
+# ╭───────────────────────────────────────────────────╮
+# │  MONITORES · resolución, posición y escala        │
+# ╰───────────────────────────────────────────────────╯
+#   Sintaxis: monitor = <nombre>, <resolución@refresh>, <posición_X>x<posición_Y>, <escala>
+
+monitor= DP-4, 1920x1080@75, 0x0, 1.00 # Monitor HP conectado por DP a la Docking - queda a la izquierda del laptop
+monitor= eDP-1, 1920x1080@60, 1920x0, 1.00 # Monitor de la laptop - queda a la derecha del monitor HP
+
+# Monitor HP conectado directamente por HDMI a la Docking Station (desactivado)
+#monitor= DP-5, 1920x1080@60, 0x0, 1.00
+
+# Monitor HP conectado directamente por HDMI a la PC (desactivado)
+#monitor= HDMI-A-1, 1920x1080@60, 0x0, 1.00
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  AUTOSTART · programas que arrancan con Hyprland  │
+# ╰───────────────────────────────────────────────────╯
+
+# Ícono de NetworkManager en la bandeja del sistema (waybar)
+exec-once = nm-applet --indicator
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  INPUT · teclado, touchpad y mouse                │
+# ╰───────────────────────────────────────────────────╯
+#   Más info: https://wiki.hyprland.org/Configuring/Variables/
+input {
+    kb_layout = us,es          # Dos layouts: inglés y español
+    kb_variant =
+    kb_model =
+    kb_options = grp:win_space_toggle   # Cambiar de idioma con Win+Espacio
+    kb_rules =
+    numlock_by_default = true  # Numlock activado al iniciar
+    follow_mouse = 1           # El foco de ventana sigue al mouse
+
+    touchpad {
+        natural_scroll = true          # Scroll "natural" (como en móviles)
+        tap-to-click = true            # Tocar el touchpad = clic
+        disable_while_typing = true    # Desactiva touchpad mientras escribes
+    }
+    sensitivity = 0 # Sensibilidad del mouse: -1.0 a 1.0 (0 = sin cambios)
+}
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  GENERAL · bordes, gaps y layout                  │
+# ╰───────────────────────────────────────────────────╯
+general {
+    gaps_in = 5           # Espacio entre ventanas
+    gaps_out = 10         # Espacio entre ventanas y bordes de pantalla
+    border_size = 2       # Grosor del borde de ventana
+    col.active_border = rgba(33ccffee) rgba(8f00ffee) 45deg   # Color borde ventana activa
+    col.inactive_border = rgba(595959aa)                       # Color borde ventana inactiva
+    layout = dwindle      # Tipo de organización de ventanas (tiling)
+}
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  DECORACIÓN · esquinas, blur y sombras            │
+# ╰───────────────────────────────────────────────────╯
+decoration {
+    rounding = 10   # Qué tan redondeadas son las esquinas de las ventanas
+
+    blur {
+       enabled = true
+       size = 8
+       passes = 3
+    }
+
+    shadow {
+        enabled = true
+        range = 4
+        render_power = 3
+        color = rgba(1a1a1aee)
+    }
+}
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  ANIMACIONES · curvas y transiciones              │
+# ╰───────────────────────────────────────────────────╯
+animations {
+    enabled = true
+    bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+    animation = windows, 1, 7, myBezier
+    animation = windowsOut, 1, 7, default, popin 80%
+    animation = border, 1, 10, default
+    animation = fade, 1, 7, default
+    animation = workspaces, 1, 6, default
+}
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  DWINDLE · organización en mosaico                │
+# ╰───────────────────────────────────────────────────╯
+dwindle {
+    pseudotile = true      # Permite pseudo-flotar una ventana (mainMod + P)
+    preserve_split = true  # Mantiene la división de pantalla al cerrar ventanas
+}
+
+master {
+    new_status = master   # Config del layout alternativo "master"
+}
+
+misc {
+	disable_hyprland_logo = true   # Oculta el logo de Hyprland de fondo
+}
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  REGLAS DE VENTANA · flotante, tile, opacidad     │
+# ╰───────────────────────────────────────────────────╯
+#   Controlan cómo se comporta cada aplicación: flotante, tile, opacidad, etc.
+#   Más info: https://wiki.hyprland.org/Configuring/Window-Rules/
+
+# Estas ventanas se abren SIEMPRE flotantes (no en mosaico)
+windowrulev2 = float, title:(^(kitty)$)
+windowrulev2 = float, title:(^(garuda-assistant)$)
+windowrulev2 = float, title:(^(garuda-boot-options)$)
+windowrulev2 = float, title:(^(garuda-boot-repair)$)
+windowrulev2 = float, title:(^(garuda-gamer)$)
+windowrulev2 = float, title:(^(garuda-network-assistant)$)
+windowrulev2 = float, title:(^(garuda-settings-manager)$)
+windowrulev2 = float, title:(^(garuda-welcome)$)
+windowrulev2 = float, title:(^(calamares)$)
+
+# NOTA: estas reglas de abajo se agregaron para que Kitty (y antes NetBeans)
+# se comporten en modo "tile" (mosaico) en vez de flotar, ya que por defecto
+# tendían a abrirse flotando y no encajaban bien con el resto de ventanas.
+# windowrulev2 = float,class:^(kitty)$,title:^(kitty)$   # (desactivada, ya no se usa)
+windowrulev2 = tile, class:^(kitty)$
+#windowrulev2 = noborder, class:^(Apache NetBeans IDE 26)$   # (desactivada)
+#windowrulev2 = float, xwayland:1, title:^(.*)$, windowtype:^(popup|dialog)$
+#windowrulev2 = noanim, xwayland:1, windowtype:^(popup|dialog)$
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MAINMOD · SUPER como tecla modificadora          │
+# ╰───────────────────────────────────────────────────╯
+#   Todo atajo que empiece con "$mainMod" en realidad usa la tecla SUPER (Win)
+$mainMod = SUPER
+
+# Cambiar layout de teclado con SUPER + Espacio
+bind = $mainMod, SPACE, exec, swaymsg input '*' xkb_layout us,es
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  ATAJOS PRINCIPALES · terminal, cerrar, launcher  │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod SHIFT, R, exec, hyprctl reload         # Recargar config de Hyprland
+bind = $mainMod, 36, exec, kitty  # 36 = tecla Enter -> Abre Kitty
+bind = $mainMod, T, exec, kitty                        # SUPER+T -> Abre Kitty (terminal)
+bind = $mainMod, Q, killactive,                        # SUPER+Q -> Cierra ventana activa
+bind = $mainMod SHIFT, E, exec, nwgbar                 # Menú de apagar/reiniciar/etc
+bind = $mainMod, N, exec, thunar                       # SUPER+N -> Abre Thunar (explorador de archivos)
+bind = $mainMod SHIFT, 65, togglefloating,             # SUPER+SHIFT+Espacio -> Alternar ventana flotante
+bind = SUPER, SUPER_L, exec, pkill wofi || wofi --normal-window --show drun  # Menú de apps (como un launcher)
+bind = $mainMod, E, exec, emote                        # SUPER+E -> Abre selector de emojis
+bind = $mainMod SHIFT, D, exec, nwg-drawer -mb 10 -mr 10 -ml 10 -mt 10   # Drawer de apps
+bind = $mainMod, P, pseudo, # dwindle                  # Alternar pseudo-tiling
+bind = $mainMod SHIFT, P, togglesplit, # dwindle       # Alternar dirección de división
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  TECLAS F1-F12 · lanzar aplicaciones              │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod, F1, exec, firedragon        # Navegador Firedragon
+bind = $mainMod, F2, exec, thunderbird       # Cliente de correo
+bind = $mainMod, F3, exec, thunar            # Explorador de archivos (duplicado con SUPER+N)
+bind = $mainMod, F4, exec, geany             # Editor de texto/código ligero
+bind = $mainMod, F5, exec, github-desktop    # Cliente gráfico de GitHub
+bind = $mainMod, F6, exec, gparted           # Editor de particiones de disco
+bind = $mainMod, F7, exec, inkscape          # Editor de gráficos vectoriales
+bind = $mainMod, F8, exec, blender           # Software de modelado 3D
+bind = $mainMod, F9, exec, meld              # Comparador de archivos/diferencias
+bind = $mainMod, F10, exec, joplin-desktop   # App de notas
+bind = $mainMod, F11, exec, snapper-tools    # Gestión de snapshots del sistema (Btrfs)
+bind = $mainMod, F12, exec, galculator       # Calculadora
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  FOCO · mover entre ventanas · flechas o HJKL     │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod, left, movefocus, l
+bind = $mainMod, H, movefocus, l       # Izquierda
+bind = $mainMod, right, movefocus, r
+bind = $mainMod, L, movefocus, r       # Derecha
+bind = $mainMod, up, movefocus, u
+bind = $mainMod, K, movefocus, u       # Arriba
+bind = $mainMod, down, movefocus, d
+bind = $mainMod, J, movefocus, d       # Abajo
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  WORKSPACES · cambiar con SUPER + número          │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+bind = $mainMod, 6, workspace, 6
+bind = $mainMod, 7, workspace, 7
+bind = $mainMod, 8, workspace, 8
+bind = $mainMod, 9, workspace, 9
+bind = $mainMod, 0, workspace, 10
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MOVER A WORKSPACE · ALT + SHIFT + número         │
+# ╰───────────────────────────────────────────────────╯
+bind = ALT SHIFT, 1, movetoworkspace, 1
+bind = ALT SHIFT, 2, movetoworkspace, 2
+bind = ALT SHIFT, 3, movetoworkspace, 3
+bind = ALT SHIFT, 4, movetoworkspace, 4
+bind = ALT SHIFT, 5, movetoworkspace, 5
+bind = ALT SHIFT, 6, movetoworkspace, 6
+bind = ALT SHIFT, 7, movetoworkspace, 7
+bind = ALT SHIFT, 8, movetoworkspace, 8
+bind = ALT SHIFT, 9, movetoworkspace, 9
+bind = ALT SHIFT, 0, movetoworkspace, 10
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MOVER SIN SEGUIR · SUPER + SHIFT + número        │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod SHIFT, 1, movetoworkspacesilent, 1
+bind = $mainMod SHIFT, 2, movetoworkspacesilent, 2
+bind = $mainMod SHIFT, 3, movetoworkspacesilent, 3
+bind = $mainMod SHIFT, 4, movetoworkspacesilent, 4
+bind = $mainMod SHIFT, 5, movetoworkspacesilent, 5
+bind = $mainMod SHIFT, 6, movetoworkspacesilent, 6
+bind = $mainMod SHIFT, 7, movetoworkspacesilent, 7
+bind = $mainMod SHIFT, 8, movetoworkspacesilent, 8
+bind = $mainMod SHIFT, 9, movetoworkspacesilent, 9
+bind = $mainMod SHIFT, 0, movetoworkspacesilent, 10
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  WORKSPACES · rueda del mouse + SUPER             │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod, mouse_down, workspace, e+1
+bind = $mainMod, mouse_up, workspace, e-1
+bind = $mainMod, TAB, cyclenext     # Ciclar entre ventanas abiertas
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MOUSE · mover y redimensionar arrastrando        │
+# ╰───────────────────────────────────────────────────╯
+bindm = $mainMod, mouse:272, movewindow      # Clic izquierdo + arrastrar = mover
+bindm = $mainMod, mouse:273, resizewindow    # Clic derecho + arrastrar = redimensionar
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  WALLPAPER · fondo de pantalla                    │
+# ╰───────────────────────────────────────────────────╯
+#exec-once = wpaperd                                          # (desactivado)
+exec-once = awww-daemon                                        # Demonio de wallpaper animado (antes swww, renombrado a awww)
+#exec-once = ~/.local/bin/cambiarWallpaper.sh                  # (desactivado)
+exec-once = sleep 2 && ~/.local/bin/wallpaper-loop.sh          # Script que rota wallpapers
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  WAYBAR · barra de estado                         │
+# ╰───────────────────────────────────────────────────╯
+exec-once = waybar
+layerrulev2 = blur , waybar       # Desenfoque en la barra
+layerrulev2 = ignorezero , waybar
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  VOLUMEN · teclas multimedia y micrófono          │
+# ╰───────────────────────────────────────────────────╯
+bind = ,122, exec, pamixer --decrease 5; notify-send " Volume: "$(pamixer --get-volume) -t 500
+bind = ,123, exec, pamixer --increase 5; notify-send " Volume: "$(pamixer --get-volume) -t 500
+bind = ,121, exec, pamixer --toggle-mute; notify-send " Volume: Toggle-mute" -t 500
+bind = ,XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle; notify-send "System Mic: Toggle-mute" -t 500
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  OTROS ATAJOS · fullscreen, brillo, navegador     │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod, O, exec, firefox                 # Abrir Firefox
+bind = $mainMod, M, fullscreen, 1                 # Pantalla completa (modo "maximizar")
+bind = $mainMod, F, fullscreen, 0                 # Pantalla completa (modo real)
+bind = $mainMod SHIFT, F, fullscreenstate, 0 2
+bind = ,232,exec,brightnessctl -c backlight set 5%-     # Bajar brillo (laptop)
+bind = ,233,exec,brightnessctl -c backlight set +5%     # Subir brillo (laptop)
+bind = $mainMod SHIFT,C, exec, killall -9 wpaperd && wpaperd   # Reiniciar wpaperd
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  CAPTURAS · screenshots con grimblast             │
+# ╰───────────────────────────────────────────────────╯
+#bind = ,Print, exec, grim -g "$(slurp)" - | swappy -f -                        # Captura de una selección
+#bind = CTRL, Print, exec, .config/hypr/scripts/screenshot_window.sh            # Captura de una ventana
+#bind = SHIFT, Print, exec, .config/hypr/scripts/screenshot_display.sh          # Captura de toda la pantalla
+bind = ,Print, exec, grimblast --notify copysave area ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_selection.png
+bind = CTRL, Print, exec, grimblast --notify copysave active ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_window.png
+bind = SHIFT, Print, exec, grimblast --notify copysave screen ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_display.png
+
+# ╭───────────────────────────────────────────────────╮
+# │  SUBMAP RESIZE · SUPER+R, flechas o HJKL, ESC     │
+# ╰───────────────────────────────────────────────────╯
+#   Al presionar SUPER+R entras a este "modo resize"; usas flechas o H/J/K/L
+#   para achicar/agrandar la ventana activa, y ESC para salir del modo.
+bind=$mainMod,R,submap,resize
+
+submap=resize
+binde=,right,resizeactive,50 0
+binde=,L,resizeactive,50 0
+binde=,left,resizeactive,-50 0
+binde=,H,resizeactive,-50 0
+binde=,up,resizeactive,0 -50
+binde=,K,resizeactive,0 -50
+binde=,down,resizeactive,0 50
+binde=,J,resizeactive,0 50
+bind=,escape,submap,reset      # ESC -> sale del modo resize
+
+submap=reset
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MOVER VENTANA · SUPER + SHIFT + flechas/HJKL     │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod SHIFT,up, movewindow, u
+bind = $mainMod SHIFT,K, movewindow, u
+bind = $mainMod SHIFT,down, movewindow, d
+bind = $mainMod SHIFT,J, movewindow, d
+bind = $mainMod SHIFT,left, movewindow, l
+bind = $mainMod SHIFT,H, movewindow, l
+bind = $mainMod SHIFT,right, movewindow, r
+bind = $mainMod SHIFT,L, movewindow, r
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  WORKSPACE MAGIC · scratchpad oculto              │
+# ╰───────────────────────────────────────────────────╯
+bind = $mainMod SHIFT, S, togglespecialworkspace, magic
+bind = $mainMod SHIFT, S, movetoworkspace, +0
+bind = $mainMod SHIFT, S, togglespecialworkspace, magic
+bind = $mainMod SHIFT, S, movetoworkspace, special:magic
+bind = $mainMod SHIFT, S, togglespecialworkspace, magic
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  BLUR Y OPACIDAD · ventanas y menús               │
+# ╰───────────────────────────────────────────────────╯
+blurls = wofi
+blurls = thunar
+blurls = gedit
+blurls = gtk-layer-shell # para nwg-drawer
+blurls = catfish
+
+# Opacidad para ventanas específicas
+windowrulev2 = opacity 0.85 override 0.85 override,title:(^(thunar)$)
+windowrulev2 = opacity 0.85 override 0.85 override,title:(^(gedit)$)
+windowrulev2 = opacity 0.85 override 0.85 override,title:(^(catfish)$)
+windowrulev2 = stayfocused, title:(^(wofi)$)     # Wofi siempre mantiene el foco
+
+# Opacidad para CUALQUIER ventana flotante
+windowrulev2 = opacity 0.85 0.85,floating:1
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MÁS AUTOSTART · notificaciones y polkit          │
+# ╰───────────────────────────────────────────────────╯
+exec-once = mako                                                         # Notificaciones del sistema
+exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1    # Agente de autenticación (contraseñas root en apps gráficas)
+
+# pre-ejecuciones (en desarrollo/experimental)
+exec-once = exec xrdb -load ~/.Xresources
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  CLIPBOARD · historial con cliphist               │
+# ╰───────────────────────────────────────────────────╯
+exec-once = wl-paste --type text --watch cliphist store   # Guarda historial de texto copiado
+exec-once = wl-paste --type image --watch cliphist store  # Guarda historial de imágenes copiadas
+bind = SUPER, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy   # SUPER+V -> Ver historial del portapapeles
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  MULTIMEDIA · play, pause, siguiente, anterior    │
+# ╰───────────────────────────────────────────────────╯
+bind=,172,exec,playerctl play-pause
+bind=,171,exec,playerctl next
+bind=,173,exec,playerctl previous
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  GTK · temas e íconos                             │
+# ╰───────────────────────────────────────────────────╯
+exec-once = apply-gsettings
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  RENDIMIENTO · VFR y consumo de energía           │
+# ╰───────────────────────────────────────────────────╯
+#   Más info: https://wiki.hyprland.org/Configuring/Performance/
+misc:vfr = true    # Variable Frame Rate: reduce consumo cuando no hay movimiento
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  GARUDA · herramientas y scripts propios          │
+# ╰───────────────────────────────────────────────────╯
+
+# SUPER+SHIFT+G -> Habilita "G-Hyprland" (script propio del usuario)
+# NOTA: se cambió "footclient" por "kitty" ya que el paquete foot fue desinstalado
+bind = $mainMod SHIFT, G, exec, kitty -e ~/.local/bin/bear/implement_gum.sh enable
+
+# SUPER+I -> Ejecuta el instalador/asistente de Garuda Hyprland
+bind = $mainMod, I, exec, .local/bin/calamares.sh
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  VARIABLES DE ENTORNO                             │
+# ╰───────────────────────────────────────────────────╯
+env = XDG_CURRENT_DESKTOP,Hyprland
+env = KITTY_ENABLE_WAYLAND=1    # Habilita soporte nativo de Wayland en Kitty
+env = WLR_USE_LIBINPUT=1        # Usa libinput para manejar dispositivos de entrada
+# Nota: preferimos configurar cosas mediante scripts -> revisar el archivo "hyprstart"
+
+
+# ╭───────────────────────────────────────────────────╮
+# │  ECOSISTEMA HYPR · hypridle                       │
+# ╰───────────────────────────────────────────────────╯
+exec-once = hypridle   # Gestiona el bloqueo/suspensión automática de pantalla
