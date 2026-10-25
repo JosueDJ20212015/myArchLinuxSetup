@@ -1,33 +1,37 @@
+/* nwgbar (menu de apagado) - isla a juego con Waybar
+ * Estilo anterior: style.css.bak-islas */
+
 #bar {
-    margin: 0px; /* affects top/bottom & left/right alignment */
-    font-size: 16px;
-    font-family: Product Sans;
+  margin: 0px;
+  font-size: 14px;
+  font-family: "JetBrains Mono", monospace;
 }
 
 button, image {
-    background: none;
-    border-style: none;
-    box-shadow: none;
-    color:#eceff4;
+  background: none;
+  border-style: none;
+  box-shadow: none;
+  color: #e0e0e0;
 }
 
 button {
-    padding-top: 10px;
-    margin: 5px
+  padding: 10px 6px 6px 6px;
+  margin: 5px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
 }
 
-button:hover {
-    background-color: rgba (255,0,0,0.5);
-}
-
+button:hover,
 button:focus {
-    background-color: rgba (255,0,0,0.5);
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 grid {
-    background-color: rgba(0,0,0,0.7);
-    border-radius: 5px;
-    padding: 5px;
-    box-shadow: 0 0 50px rgba(255,0,0,0.7);
-    /* e.g. for common background to all buttons */
+  background-color: rgba(30, 30, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
