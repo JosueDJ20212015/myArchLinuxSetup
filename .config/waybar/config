@@ -150,7 +150,7 @@
    },
     "custom/power": {
       	"format":"⏻",
-       	"on-click": "nwgbar",
+       	"on-click": "nwgbar -b 00000000",
       	"tooltip": false,
    },
    "custom/keyboard-layout": {

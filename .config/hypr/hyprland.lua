@@ -189,7 +189,8 @@ hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 hl.bind(mainMod .. " + code:36", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("nwgbar"))
+-- Menu de apagado: sin fondo a pantalla completa, solo el recuadro (con blur)
+hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("nwgbar -b 00000000"))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("thunar"))
 hl.bind(mainMod .. " + SHIFT + code:65", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + SUPER_L", hl.dsp.exec_cmd("pkill wofi || wofi --normal-window --show drun"))
@@ -268,25 +269,36 @@ hl.layer_rule({
     ignore_alpha = 0,
 })
 
--- Blur detras de las notificaciones de mako
+-- Blur detras del menu de apagado (nwgbar usa el namespace "~nwgbar")
+hl.layer_rule({
+    name = "nwgbar-blur",
+    match = { namespace = "^~?nwgbar$" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+-- Notificaciones de mako: blur y bajan deslizandose desde la barra
 hl.layer_rule({
     name = "mako-blur",
     match = { namespace = "notifications" },
     blur = true,
     ignore_alpha = 0,
+    animation = "slide top",
 })
 
-hl.bind("code:122", hl.dsp.exec_cmd("pamixer --decrease 5; notify-send \" Volume: \"$(pamixer --get-volume) -t 500"))
-hl.bind("code:123", hl.dsp.exec_cmd("pamixer --increase 5; notify-send \" Volume: \"$(pamixer --get-volume) -t 500"))
-hl.bind("code:121", hl.dsp.exec_cmd("pamixer --toggle-mute; notify-send \" Volume: Toggle-mute\" -t 500"))
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("pactl set-source-mute @DEFAULT_SOURCE@ toggle; notify-send \"System Mic: Toggle-mute\" -t 500"))
+-- Volumen y microfono: una sola notificacion que se actualiza (ver volumen.sh)
+hl.bind("code:122", hl.dsp.exec_cmd("~/.local/bin/volumen.sh down"), { repeating = true })
+hl.bind("code:123", hl.dsp.exec_cmd("~/.local/bin/volumen.sh up"), { repeating = true })
+hl.bind("code:121", hl.dsp.exec_cmd("~/.local/bin/volumen.sh mute"))
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("~/.local/bin/volumen.sh mic"))
 
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 2, action = "toggle" }))
-hl.bind("code:232", hl.dsp.exec_cmd("brightnessctl -c backlight set 5%-"))
-hl.bind("code:233", hl.dsp.exec_cmd("brightnessctl -c backlight set +5%"))
+-- Brillo: una sola notificacion que se actualiza, minimo 5 % (ver brillo.sh)
+hl.bind("code:232", hl.dsp.exec_cmd("~/.local/bin/brillo.sh down"), { repeating = true })
+hl.bind("code:233", hl.dsp.exec_cmd("~/.local/bin/brillo.sh up"), { repeating = true })
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("killall -9 wpaperd && wpaperd"))
 -- Saltar al siguiente wallpaper (uno nuevo de internet; sin conexion, uno local)
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/.local/bin/cambiarWallpaperOnline.sh || ~/.local/bin/cambiarWallpaper.sh"))
