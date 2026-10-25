@@ -145,14 +145,16 @@ framerate = 45
 # You can define as many as 8 different colors. They range from bottom to top of screen
 gradient = 1 
 gradient_count = 8
-gradient_color_1 = '#59cc33'
-gradient_color_2 = '#80cc33'
-gradient_color_3 = '#a6cc33'
-gradient_color_4 = '#cccc33'
-gradient_color_5 = '#cca633'
-gradient_color_6 = '#cc8033'
-gradient_color_7 = '#cc5933'
-gradient_color_8 = '#cc3333'
+; Degradado calido que se intensifica con la altura: melocoton solo en la base,
+; rojo desde media altura y carmesi oscuro en los picos. Anterior: verde -> rojo
+gradient_color_1 = '#ffc799'
+gradient_color_2 = '#ffa36f'
+gradient_color_3 = '#ff7f5c'
+gradient_color_4 = '#f2665e'
+gradient_color_5 = '#e0485f'
+gradient_color_6 = '#c9305c'
+gradient_color_7 = '#b02050'
+gradient_color_8 = '#961845'
 
 
 
