@@ -238,7 +238,7 @@
    },
     "custom/power": {
       	"format":"⏻",
-       	"on-click": "nwgbar -b 00000000",
+       	"on-click": "nwgbar -v -ha r -s 56 -b 00000000",
       	"tooltip": false,
    },
    "custom/keyboard-layout": {

@@ -209,7 +209,7 @@ hl.bind(mainMod .. " + code:36", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- Menu de apagado: sin fondo a pantalla completa, solo el recuadro (con blur)
-hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("nwgbar -b 00000000"))
+hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("nwgbar -v -ha r -s 56 -b 00000000"))
 -- Gestor de archivos: ranger en kitty (Thunar sigue en Super+F3)
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("kitty --class ranger -e ranger"))
 hl.bind(mainMod .. " + SHIFT + code:65", hl.dsp.window.float({ action = "toggle" }))
@@ -292,12 +292,14 @@ hl.layer_rule({
     ignore_alpha = 0,
 })
 
--- Blur detras del menu de apagado (nwgbar usa el namespace "~nwgbar")
+-- Menu de apagado (nwgbar usa el namespace "~nwgbar"): blur y entra
+-- deslizandose desde el borde derecho, junto al boton de apagado
 hl.layer_rule({
     name = "nwgbar-blur",
     match = { namespace = "^~?nwgbar$" },
     blur = true,
     ignore_alpha = 0,
+    animation = "slide right",
 })
 
 -- Lanzador (wofi): igual que las notificaciones, blur y baja desde la barra

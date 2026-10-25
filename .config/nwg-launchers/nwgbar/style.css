@@ -1,8 +1,9 @@
 /* nwgbar (menu de apagado) - isla a juego con Waybar
  * Estilo anterior: en git, commit 2bab881 */
 
+/* Columna vertical pegada a la derecha, a 10 px del borde (como los gaps) */
 #bar {
-  margin: 0px;
+  margin: 0 10px 0 0;
   font-size: 14px;
   font-family: "JetBrains Mono", monospace;
 }
