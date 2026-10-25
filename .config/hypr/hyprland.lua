@@ -103,12 +103,31 @@ hl.animation({
     bezier = "easeOutQuint",
     style = "fade",
 })
+-- Workspaces especiales (terminal desplegable): bajan deslizandose desde arriba
+hl.animation({
+    leaf = "specialWorkspace",
+    enabled = true,
+    speed = 4,
+    bezier = "easeOutQuint",
+    style = "slidevert",
+})
 hl.animation({
     leaf = "workspaces",
     enabled = true,
     speed = 4,
     bezier = "easeOutQuint",
     style = "slidefade 20%",
+})
+
+-- Terminal desplegable: flotante, centrada, justo debajo de la barra
+hl.window_rule({
+    match = {
+        class = "^(dropterm)$",
+    },
+    float = true,
+    size = { "monitor_w * 0.7", "monitor_h * 0.5" },
+    move = { "monitor_w * 0.15", "56" },
+    workspace = "special:dropterm",
 })
 
 hl.window_rule({
@@ -211,6 +230,8 @@ hl.bind(mainMod .. " + F9", hl.dsp.exec_cmd("meld"))
 hl.bind(mainMod .. " + F10", hl.dsp.exec_cmd("joplin-desktop"))
 hl.bind(mainMod .. " + F11", hl.dsp.exec_cmd("snapper-tools"))
 hl.bind(mainMod .. " + F12", hl.dsp.exec_cmd("galculator"))
+-- Terminal desplegable: la tecla de arriba a la izquierda (` en US, º en ES)
+hl.bind(mainMod .. " + code:49", hl.dsp.exec_cmd("~/.local/bin/terminal-desplegable.sh"))
 
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
@@ -302,6 +323,8 @@ hl.bind("code:233", hl.dsp.exec_cmd("~/.local/bin/brillo.sh up"), { repeating = 
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("killall -9 wpaperd && wpaperd"))
 -- Saltar al siguiente wallpaper (uno nuevo de internet; sin conexion, uno local)
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/.local/bin/cambiarWallpaperOnline.sh || ~/.local/bin/cambiarWallpaper.sh"))
+-- "No me gusta": borra el wallpaper descargado actual y pasa al siguiente
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("~/.local/bin/wallpaperNoMeGusta.sh"))
 
 hl.bind("Print", hl.dsp.exec_cmd("grimblast --notify copysave area ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_selection.png"))
 hl.bind("CTRL + Print", hl.dsp.exec_cmd("grimblast --notify copysave active ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S)_window.png"))
@@ -388,6 +411,15 @@ hl.bind(mainMod .. " + SHIFT + G", hl.dsp.exec_cmd("kitty -e ~/.local/bin/bear/i
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(".local/bin/calamares.sh"))
 
 hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
+-- Tema GTK neutro (sobrescribe GTK_THEME=Sweet-Dark de /etc/environment)
+hl.env("GTK_THEME", "adw-gtk3-dark:dark") -- ":dark" obliga a GTK4 a usar la variante oscura
+-- Seleccion de capturas (slurp via grimblast): pantalla atenuada, borde blanco fino
+hl.env("SLURP_ARGS", "-b 00000066 -c e0e0e0ff -s ffffff14 -w 1")
+-- Cursor blanco a juego con los iconos de Waybar
+hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Ice")
+hl.env("HYPRCURSOR_SIZE", "24")
 -- TODO: manual review — malformed env on line 434: KITTY_ENABLE_WAYLAND=1
 -- TODO: manual review — malformed env on line 435: WLR_USE_LIBINPUT=1
 

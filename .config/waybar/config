@@ -9,7 +9,7 @@
     // Add according to your wishes: "custom/weather"
 
     "modules-left": ["custom/launcher", "hyprland/workspaces"],
-    "modules-center": ["group/clock"],
+    "modules-center": ["group/clock", "custom/media-prev", "mpris", "custom/media-next"],
     "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery", "network", "bluetooth", "tray", "custom/power"],
 
  // Modules configuration
@@ -77,6 +77,34 @@
         "interval": 60,
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "on-click-right": "~/.config/waybar/scripts/OCV"
+    },
+    // Musica: la isla del reloj crece cuando suena algo y se encoge sin reproductor
+    "mpris": {
+        "format": "{status_icon}  {dynamic}",
+        "format-paused": "{status_icon}  <i>{dynamic}</i>",
+        "format-stopped": "",
+        "dynamic-order": ["title", "artist"],
+        "dynamic-separator": " · ",
+        "dynamic-len": 40,
+        "status-icons": {
+            "playing": "󰏤",
+            "paused": "󰐊"
+        },
+        "tooltip-format": "{player}: {title} · {artist}",
+        "on-click": "playerctl play-pause"
+    },
+    // Botones: sin salida (sin reproductor) Waybar los oculta
+    "custom/media-prev": {
+        "exec": "playerctl status >/dev/null 2>&1 && echo '󰒮'",
+        "interval": 2,
+        "tooltip": false,
+        "on-click": "playerctl previous"
+    },
+    "custom/media-next": {
+        "exec": "playerctl status >/dev/null 2>&1 && echo '󰒭'",
+        "interval": 2,
+        "tooltip": false,
+        "on-click": "playerctl next"
     },
     "cpu": {
         "format": "🖳{usage}%",

@@ -20,6 +20,10 @@ max-icon-size=32
 [grouped]
 format=<b>%s</b>\n%b
 
+# Capturas de pantalla: miniatura grande de la imagen
+[app-name=grimblast]
+max-icon-size=120
+
 [urgency=low]
 text-color=#aaaaaa
 

@@ -94,6 +94,37 @@ tooltip {
   color: #aaaaaa;
 }
 
+/* Musica dentro de la isla central */
+#mpris {
+  padding: 0 4px;
+  color: #aaaaaa;
+  font-size: 13px;
+}
+
+#mpris.playing {
+  color: #e0e0e0;
+}
+
+#custom-media-prev,
+#custom-media-next {
+  padding: 0 6px;
+  color: #e0e0e0;
+  transition: all 0.15s ease;
+}
+
+/* Separacion entre la hora y la musica */
+#custom-media-prev {
+  margin-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 10px;
+}
+
+#custom-media-prev:hover,
+#custom-media-next:hover,
+#mpris:hover {
+  color: #ffffff;
+}
+
 /* -----------------------------------------------------------------------------
  * Derecha
  * -------------------------------------------------------------------------- */
