@@ -282,8 +282,8 @@ Item {
             id: formBg
             anchors.fill: mainStack
             anchors.centerIn: mainStack
-            color: "#161925"
-            opacity: 0.4
+            color: "#141414"
+            opacity: 0.45
             z:-1
         }
 

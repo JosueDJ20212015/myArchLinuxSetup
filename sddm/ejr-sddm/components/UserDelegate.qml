@@ -58,11 +58,8 @@ Item {
         height: width
         radius: width / 2
 
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#FEAC5E" }
-            GradientStop { position: 0.33; color: "#C779D0" }
-            GradientStop { position: 1.0; color: "#4BC0C8" }
-        }
+        // Anillo blanco tenue (antes degradado naranja/morado/turquesa)
+        color: "#26ffffff"
 
         z:-1
         rotation: 270

@@ -9,7 +9,8 @@
 ## Instalar en una máquina nueva
 
 ```bash
-sudo cp -r ejr-sddm /usr/share/sddm/themes/ejr-sddm
+# -T: copia el contenido encima (sin -T, si el tema ya existe crea ejr-sddm/ejr-sddm)
+sudo cp -rT ejr-sddm /usr/share/sddm/themes/ejr-sddm
 sudo chmod 644 /usr/share/sddm/themes/ejr-sddm/assets/*
 sudo cp sddm.conf /etc/sddm.conf
 ```
@@ -24,6 +25,6 @@ sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/ejr-sddm/
 
 1. Copia tu imagen a `ejr-sddm/assets/`
 2. Edita `ejr-sddm/theme.conf`, línea `Background="assets/tu-imagen.jpg"`
-3. Repite el `cp -r` de arriba y prueba con el comando de test-mode
+3. Repite el `cp -rT` de arriba y prueba con el comando de test-mode
 
 **Tip:** guarda siempre el tema en una carpeta propia (`ejr-sddm`, no `Sweet6` directamente) — si editas el tema original, una actualización del sistema te lo revierte sin avisar.

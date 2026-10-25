@@ -8,13 +8,13 @@ TextField {
     font.family: config.font
     width: parent.width
     background: Rectangle {
-        color: "#252a3f"
-        opacity: 0.7
-        radius: parent.width / 2
+        // Isla translucida a juego con Waybar/hyprlock
+        color: "#8c282828"
+        radius: 10
         width: parent.width
         height: width / 9
         border.width: 1
-        border.color: parent.focus ? config.selected_color : "#121517"
+        border.color: parent.focus ? "#4dffffff" : "#14ffffff"
         anchors.fill: parent
     }
 }

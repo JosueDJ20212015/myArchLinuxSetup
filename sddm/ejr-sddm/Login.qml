@@ -119,19 +119,15 @@ SessionManagementScreen {
             elide: Text.ElideRight
         }
 
+        // Isla blanca translucida (antes degradado amarillo/rosa/morado)
         background: Rectangle {
             id: buttonBackground
-            height: parent.width
-            width: height / 9
-            radius: width / 2
-            rotation: -90
-            anchors.centerIn: parent
-
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "#F9D423" }
-                GradientStop { position: 0.33; color: "#FF4E50" }
-                GradientStop { position: 1.0; color: "#8A2387" }
-            }
+            anchors.fill: parent
+            radius: 10
+            color: loginButton.hovered || loginButton.activeFocus ? "#33ffffff" : "#1affffff"
+            border.width: 1
+            border.color: "#26ffffff"
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
 
         onClicked: startLogin();
