@@ -1,0 +1,4 @@
+/* Acento neutro a juego con las islas de Waybar (en lugar del azul por defecto) */
+@define-color accent_color #e0e0e0;
+@define-color accent_bg_color #505050;
+@define-color accent_fg_color #ffffff;

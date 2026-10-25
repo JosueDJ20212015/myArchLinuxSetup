@@ -1,0 +1,11 @@
+/* Acento neutro a juego con las islas de Waybar (en lugar del azul por defecto) */
+@define-color accent_color #e0e0e0;
+@define-color accent_bg_color #505050;
+@define-color accent_fg_color #ffffff;
+
+/* GTK 4.16+ (libadwaita.css) usa variables CSS para el acento */
+:root {
+  --accent-bg-color: #505050;
+  --accent-color: #e0e0e0;
+  --accent-fg-color: #ffffff;
+}
