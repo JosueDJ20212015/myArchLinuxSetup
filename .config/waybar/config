@@ -72,8 +72,9 @@
         "on-click": "foot -e htop"
     },
     "temperature": {
-        "thermal-zone": 7,  // Check with: # cat /sys/class/hwmon/hwmon*/temp1_input
-        "hwmon-path": "/sys/class/hwmon/hwmon7/temp1_input",
+        // CPU (coretemp, "Package id 0"); ruta estable aunque cambie el número de hwmon
+        "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+        "input-filename": "temp1_input",
         "critical-threshold": 80,
         "format-critical": "{temperatureC}°C ",
         "format": "{temperatureC}°C "
@@ -123,7 +124,7 @@
            "updated": "󰂪",
        },
        "exec-if": "which waybar-module-pacman-updates",
-       "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 7200 --network-interval-seconds",
+       "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 7200",
        "on-click": "foot -e update"
    },
     "custom/power": {
