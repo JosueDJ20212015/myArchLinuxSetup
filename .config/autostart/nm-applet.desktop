@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Network
+# Oculto: el WiFi se muestra con los modulos "network" de Waybar
+Hidden=true
