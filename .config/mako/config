@@ -1,5 +1,5 @@
 # Notificaciones como islas, a juego con Waybar
-# Estilo anterior: config.bak-islas
+# Estilo anterior: en git, commit 2bab881
 anchor=bottom-right
 font=JetBrains Mono 10
 background-color=#1e1e1ecc
