@@ -49,37 +49,66 @@ hl.monitor({
 -- ╰───────────────────────────────────────────────────╯
 --   Más info: https://wiki.hyprland.org/Configuring/Variables/
 
-hl.curve("myBezier", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
+-- ╭───────────────────────────────────────────────────╮
+-- │  ANIMACIONES · estilo macOS                       │
+-- ╰───────────────────────────────────────────────────╯
+--   Abrir: ease-out (rapido al inicio, se posa suave)
+--   Cerrar: ease-in (empieza suave, se va rapido)
+--   speed: 1 = 100 ms
+--   Anterior: myBezier (0.05,0.9 -> 0.1,1.05) en windows, popin 80% al cerrar
+hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
+hl.curve("easeInCubic", { type = "bezier", points = { { 0.32, 0 }, { 0.67, 0 } } })
 hl.animation({
-    leaf = "windows",
+    leaf = "windowsIn",
     enabled = true,
-    speed = 7,
-    bezier = "myBezier",
+    speed = 4,
+    bezier = "easeOutQuint",
+    style = "popin 85%",
 })
 hl.animation({
     leaf = "windowsOut",
     enabled = true,
-    speed = 7,
-    bezier = "default",
-    style = "popin 80%",
+    speed = 2.5,
+    bezier = "easeInCubic",
+    style = "popin 85%",
+})
+hl.animation({
+    leaf = "windowsMove",
+    enabled = true,
+    speed = 4,
+    bezier = "easeOutQuint",
 })
 hl.animation({
     leaf = "border",
     enabled = true,
-    speed = 10,
-    bezier = "default",
+    speed = 5,
+    bezier = "easeOutQuint",
 })
 hl.animation({
-    leaf = "fade",
+    leaf = "fadeIn",
     enabled = true,
-    speed = 7,
-    bezier = "default",
+    speed = 4,
+    bezier = "easeOutQuint",
+})
+hl.animation({
+    leaf = "fadeOut",
+    enabled = true,
+    speed = 2.5,
+    bezier = "easeInCubic",
+})
+hl.animation({
+    leaf = "layers",
+    enabled = true,
+    speed = 3,
+    bezier = "easeOutQuint",
+    style = "fade",
 })
 hl.animation({
     leaf = "workspaces",
     enabled = true,
-    speed = 6,
-    bezier = "default",
+    speed = 4,
+    bezier = "easeOutQuint",
+    style = "slidefade 20%",
 })
 
 hl.window_rule({
@@ -231,8 +260,21 @@ hl.bind(mainMod .. " + TAB", hl.dsp.window.cycle_next({ next = true }))
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag())
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize())
 
--- TODO: manual review — top-level key 'layerrulev2 = blur , waybar' has no enclosing section
--- TODO: manual review — top-level key 'layerrulev2 = ignorezero , waybar' has no enclosing section
+-- Blur detras de las islas de Waybar; ignore_alpha evita difuminar la zona transparente
+hl.layer_rule({
+    name = "waybar-blur",
+    match = { namespace = "waybar" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+-- Blur detras de las notificaciones de mako
+hl.layer_rule({
+    name = "mako-blur",
+    match = { namespace = "notifications" },
+    blur = true,
+    ignore_alpha = 0,
+})
 
 hl.bind("code:122", hl.dsp.exec_cmd("pamixer --decrease 5; notify-send \" Volume: \"$(pamixer --get-volume) -t 500"))
 hl.bind("code:123", hl.dsp.exec_cmd("pamixer --increase 5; notify-send \" Volume: \"$(pamixer --get-volume) -t 500"))
@@ -357,10 +399,12 @@ hl.config({
     general = {
         gaps_in = 5, -- Espacio entre ventanas
         gaps_out = 10, -- Espacio entre ventanas y bordes de pantalla
-        border_size = 2, -- Grosor del borde de ventana
+        border_size = 1, -- Grosor del borde de ventana
         col = {
-            active_border = { colors = { "rgba(33ccffee)", "rgba(8f00ffee)" }, angle = 45 }, -- Color borde ventana activa
-            inactive_border = "rgba(595959aa)", -- Color borde ventana inactiva
+            -- Mismo contorno blanco translucido que las islas de Waybar
+            -- Anterior: degradado rgba(33ccffee) -> rgba(8f00ffee), 2 px
+            active_border = "rgba(ffffff40)", -- Color borde ventana activa (blanco 25%)
+            inactive_border = "rgba(ffffff10)", -- Color borde ventana inactiva (blanco 6%)
         },
         layout = "dwindle", -- Tipo de organización de ventanas (tiling)
     },
@@ -369,6 +413,8 @@ hl.config({
     -- ╰───────────────────────────────────────────────────╯
     decoration = {
         rounding = 10, -- Qué tan redondeadas son las esquinas de las ventanas
+        active_opacity = 1.0, -- Ventana enfocada totalmente opaca
+        inactive_opacity = 0.92, -- Ventanas sin foco ligeramente translucidas (deja ver el blur)
         blur = {
             enabled = true,
             size = 8,
@@ -376,9 +422,10 @@ hl.config({
         },
         shadow = {
             enabled = true,
-            range = 4,
+            range = 20, -- Sombra amplia y suave: las ventanas "flotan" como las islas
             render_power = 3,
-            color = "rgba(1a1a1aee)",
+            color = "rgba(00000055)",
+            color_inactive = "rgba(00000033)",
         },
     },
     -- ╭───────────────────────────────────────────────────╮
@@ -510,7 +557,8 @@ hl.config({
 })
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("nm-applet --indicator")
+    -- WiFi ahora es el modulo "network" de Waybar (icono blanco)
+    -- hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("sleep 2 && ~/.local/bin/wallpaper-loop.sh")
     hl.exec_cmd("waybar")
