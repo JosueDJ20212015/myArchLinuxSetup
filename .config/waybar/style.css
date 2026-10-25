@@ -110,6 +110,19 @@ tooltip {
 /* -----------------------------------------------------------------------------
  * Centro
  * -------------------------------------------------------------------------- */
+
+/* Ventanas minimizadas, a la izquierda de la hora con un separador */
+#custom-minimizadas {
+  padding: 0 10px 0 6px;
+  margin-right: 4px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  color: #aaaaaa;
+  transition: all 0.15s ease;
+}
+
+#custom-minimizadas:hover {
+  color: #ffffff;
+}
 #clock {
   padding: 0 10px;
   font-weight: 600;

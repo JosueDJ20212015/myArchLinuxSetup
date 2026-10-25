@@ -9,7 +9,7 @@
     // Add according to your wishes: "custom/weather"
 
     "modules-left": ["custom/launcher", "hyprland/workspaces", "network#ip", "custom/dev-servers", "custom/docker"],
-    "modules-center": ["clock", "custom/media-prev", "mpris", "custom/media-next"],
+    "modules-center": ["custom/minimizadas", "clock", "custom/media-prev", "mpris", "custom/media-next"],
     "modules-right": ["custom/updates", "temperature", "cpu", "memory", "battery#alerta", "network#alerta", "privacy", "group/conexiones", "tray", "custom/power"],
 
  // Modules configuration
@@ -53,6 +53,17 @@
     "tray": {
         "icon-size": 20,
         "spacing": 5
+    },
+    // Ventanas minimizadas (Super+Shift+M): solo aparece si hay alguna.
+    // minimizar.sh refresca al instante con la senal 8; el intervalo cubre
+    // ventanas que se cierren estando minimizadas
+    "custom/minimizadas": {
+        "exec": "~/.local/bin/minimizar.sh estado",
+        "return-type": "json",
+        "interval": 3,
+        "signal": 8,
+        "on-click": "~/.local/bin/minimizar.sh restaurar",
+        "on-click-right": "~/.local/bin/minimizar.sh elegir"
     },
     // Reloj: solo fecha y hora, p. ej. "25 Oct 11:04 AM" (clic derecho: calendario)
     "clock": {

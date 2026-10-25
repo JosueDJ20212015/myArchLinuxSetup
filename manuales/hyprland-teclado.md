@@ -90,6 +90,14 @@ Puedes usar **flechas** o **`H J K L`** (las mismas de vim y ranger):
 | `Super + Shift + P` | Cambiar la división: lado a lado ↔ una encima de otra |
 | `Super + P` | Modo "pseudo" (la ventana conserva su tamaño dentro de su espacio) |
 | `Super + Shift + Espacio` | Hacer flotante / volver a mosaico |
+| `Super + Shift + M` | **Minimizar**: la ventana se esconde y su icono aparece en la isla central |
+
+### Minimizar y restaurar
+
+- `Super + Shift + M` esconde la ventana enfocada; las demás se reacomodan solas.
+- En la isla central, a la izquierda de la hora, aparece un icono por cada ventana minimizada.
+- **Clic** en el icono → restaura la **última** minimizada en su escritorio original.
+- **Clic derecho** → eliges cuál restaurar (si hay varias).
 
 ### Cambiar el tamaño (modo resize)
 
@@ -172,6 +180,7 @@ Super + Tab    siguiente   Super + R  →  flechas  →  Esc   (tamaño)
 Super          lanzador    Super + Q        cerrar
 Super + Enter  terminal    Super + `/º      terminal desplegable
 Super + N      archivos    Super + Shift+E  apagar / bloquear
+Super + Shift + M  minimizar (clic en su icono de la isla central para volver)
 Super + F      completa    Super + M        maximizar
 ```
 

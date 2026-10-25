@@ -328,6 +328,8 @@ hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("~/.local/bin/volumen.sh mic"))
 
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+-- Minimizar: la ventana se esconde y aparece su icono en la isla central (ver minimizar.sh)
+hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("~/.local/bin/minimizar.sh min"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 2, action = "toggle" }))
 -- Brillo: una sola notificacion que se actualiza, minimo 5 % (ver brillo.sh)
