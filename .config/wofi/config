@@ -1,7 +1,8 @@
-location=middle
+location=top
+yoffset=10
 show=drun
 width=650
-height=550
+height=450
 always_parse_args=true
 show_all=true
 print_command=true

@@ -213,7 +213,8 @@ hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("nwgbar -b 00000000"))
 -- Gestor de archivos: ranger en kitty (Thunar sigue en Super+F3)
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("kitty --class ranger -e ranger"))
 hl.bind(mainMod .. " + SHIFT + code:65", hl.dsp.window.float({ action = "toggle" }))
-hl.bind("SUPER + SUPER_L", hl.dsp.exec_cmd("pkill wofi || wofi --normal-window --show drun"))
+-- Lanzador: capa arriba (como las notificaciones), baja deslizandose
+hl.bind("SUPER + SUPER_L", hl.dsp.exec_cmd("pkill wofi || wofi --show drun"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("emote"))
 hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("nwg-drawer -mb 10 -mr 10 -ml 10 -mt 10"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
@@ -297,6 +298,15 @@ hl.layer_rule({
     match = { namespace = "^~?nwgbar$" },
     blur = true,
     ignore_alpha = 0,
+})
+
+-- Lanzador (wofi): igual que las notificaciones, blur y baja desde la barra
+hl.layer_rule({
+    name = "wofi-slide",
+    match = { namespace = "^wofi$" },
+    blur = true,
+    ignore_alpha = 0,
+    animation = "slide top",
 })
 
 -- Notificaciones de mako: blur y bajan deslizandose desde la barra
