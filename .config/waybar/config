@@ -63,13 +63,11 @@
         "on-click-right": "~/.config/waybar/scripts/OCV"
     },
     // Musica: la isla del reloj crece cuando suena algo y se encoge sin reproductor
+    // Solo el icono (los nombres largos rompen la estetica); el titulo va en el tooltip
     "mpris": {
-        "format": "{status_icon}  {dynamic}",
-        "format-paused": "{status_icon}  <i>{dynamic}</i>",
+        "format": "{status_icon}",
+        "format-paused": "{status_icon}",
         "format-stopped": "",
-        "dynamic-order": ["title", "artist"],
-        "dynamic-separator": " · ",
-        "dynamic-len": 40,
         "status-icons": {
             "playing": "󰏤",
             "paused": "󰐊"
