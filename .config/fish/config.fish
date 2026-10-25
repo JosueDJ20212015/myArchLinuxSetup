@@ -176,8 +176,12 @@ alias jctl 'journalctl -p 3 -xb'
 # Recent installed packages
 alias rip 'expac --timefmt="%Y-%m-%d %T" "%l\t%n %v" | sort | tail -200 | nl'
 
-## Run fastfetch if session is interactive
-if status --is-interactive && type -q fastfetch
+## Run fastfetch only in the first interactive terminal of the session
+## (la marca vive en $XDG_RUNTIME_DIR, que se vacia al cerrar sesion o reiniciar;
+##  usa `ff` para verlo cuando quieras)
+set -l fastfetch_mark (set -q XDG_RUNTIME_DIR; and echo $XDG_RUNTIME_DIR; or echo /tmp)/fastfetch-shown
+if status --is-interactive && type -q fastfetch && not test -e $fastfetch_mark
+   touch $fastfetch_mark
    #fastfetch --config neofetch.jsonc
    #fastfetch --config /usr/share/fastfetch/presets/neofetch.jsonc --logo arch
    fastfetch --config ~/.config/fastfetch/config.jsonc --logo arch
