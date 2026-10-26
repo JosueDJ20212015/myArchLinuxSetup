@@ -204,9 +204,17 @@ Item {
 
             Behavior on opacity {
                 OpacityAnimator {
-                    duration: units.longDuration
+                    duration: 200
                 }
             }
+        }
+
+        // Teclado virtual desactivado: objeto vacio para que el resto del tema no falle
+        QtObject {
+            id: inputPanel
+            property bool keyboardActive: false
+            property int status: Loader.Null
+            function showHide() {}
         }
 
         // IMported from org.kde.breeze.components
@@ -317,12 +325,12 @@ Item {
             anchors {
                 bottom: parent.bottom
                 left: parent.left
-                margins: units.smallSpacing
+                margins: 4
             }
 
             Behavior on opacity {
                 OpacityAnimator {
-                    duration: units.longDuration
+                    duration: 200
                 }
             }
 
@@ -350,10 +358,10 @@ Item {
 
     Connections {
         target: sddm
-        onLoginFailed: {
+        function onLoginFailed() {
             notificationMessage = i18nd("plasma_lookandfeel_org.kde.lookandfeel", "Login Failed")
         }
-        onLoginSucceeded: {
+        function onLoginSucceeded() {
             //note SDDM will kill the greeter at some random point after this
             //there is no certainty any transition will finish, it depends on the time it
             //takes to complete the init

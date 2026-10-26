@@ -18,7 +18,7 @@ SessionManagementScreen {
 
     //the y position that should be ensured visible when the on screen keyboard is visible
     property int visibleBoundary: mapFromItem(loginButton, 0, 0).y
-    onHeightChanged: visibleBoundary = mapFromItem(loginButton, 0, 0).y + loginButton.height + units.smallSpacing
+    onHeightChanged: visibleBoundary = mapFromItem(loginButton, 0, 0).y + loginButton.height + 4
 
     signal loginRequest(string username, string password)
 
@@ -92,7 +92,7 @@ SessionManagementScreen {
 
         Connections {
             target: sddm
-            onLoginFailed: {
+            function onLoginFailed() {
                 passwordBox.selectAll()
                 passwordBox.forceActiveFocus()
             }
