@@ -94,9 +94,11 @@ Puedes usar **flechas** o **`H J K L`** (las mismas de vim y ranger):
 
 ### Minimizar y restaurar
 
-- `Super + Shift + M` esconde la ventana enfocada; las demás se reacomodan solas.
+- `Super + Shift + M` esconde la ventana enfocada: se encoge hacia la isla central
+  y se mete debajo de la barra (como en macOS); las demás se reacomodan solas.
 - En la isla central, a la izquierda de la hora, aparece un icono por cada ventana minimizada.
-- **Clic** en el icono → restaura la **última** minimizada en su escritorio original.
+- **Clic** en el icono → restaura la **última** minimizada en su escritorio original:
+  sale chiquita de la isla y crece hasta su lugar.
 - **Clic derecho** → eliges cuál restaurar (si hay varias).
 
 ### Cambiar el tamaño (modo resize)
