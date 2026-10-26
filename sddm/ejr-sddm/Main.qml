@@ -93,7 +93,7 @@ Item {
             }
         }
 
-        Keys.onPressed: {
+        Keys.onPressed: (event) => {
             uiVisible = true;
             event.accepted = false;
         }
@@ -196,7 +196,7 @@ Item {
                         visible: !userListComponent.showUsernamePrompt && !inputPanel.keyboardActive
                     }]
 
-                onLoginRequest: {
+                onLoginRequest: (username, password) => {
                     root.notificationMessage = ""
                     sddm.login(username, password, sessionButton.currentIndex)
                 }
@@ -249,7 +249,7 @@ Item {
                     }
                 }
 
-                onLoginRequest: {
+                onLoginRequest: (username, password) => {
                     root.notificationMessage = ""
                     sddm.login(username, password, sessionButton.currentIndex)
                 }
